@@ -2,7 +2,7 @@
        PROGRAM-ID. SCMENU.
       *AUTHOR."ALAN GUSTAVO".
       **********************************************************
-      * MENU DO SISTEMA DE BUSCA *
+      * MENU DO SISTEMA DE BUSCA E CADASTRO *
       **********************************************************
       *----------------------------------------------------------------
        ENVIRONMENT DIVISION.
@@ -47,7 +47,7 @@
            05  LINE 02  COLUMN 01 
                VALUE  "                             SISTEMA DE".
            05  LINE 02  COLUMN 41 
-               VALUE  "CONSULTAS".
+               VALUE  "BUSCA E CADASTRO".
            05  LINE 05  COLUMN 01 
                VALUE  "                          1 - CADASTRO D".
            05  LINE 05  COLUMN 41 
@@ -55,19 +55,19 @@
            05  LINE 06  COLUMN 01 
                VALUE  "                          2 - CADASTRO D".
            05  LINE 06  COLUMN 41 
-               VALUE  "E CONVENIOS".
+               VALUE  "E".
            05  LINE 07  COLUMN 01 
                VALUE  "                          3 - CADASTRO D".
            05  LINE 07  COLUMN 41 
-               VALUE  "E CIDs".
+               VALUE  "E".
            05  LINE 08  COLUMN 01 
                VALUE  "                          4 - CADASTRO D".
            05  LINE 08  COLUMN 41 
-               VALUE  "E PACIENTE".
+               VALUE  "E ".
            05  LINE 09  COLUMN 01 
                VALUE  "                          5 - CADASTRO D".
            05  LINE 09  COLUMN 41 
-               VALUE  "E CEP".
+               VALUE  "E ".
            05  LINE 10  COLUMN 01 
                VALUE  "                          6 - CONSULTA D".
            05  LINE 10  COLUMN 41 
@@ -75,19 +75,19 @@
            05  LINE 11  COLUMN 01 
                VALUE  "                          7 - CONSULTA D".
            05  LINE 11  COLUMN 41 
-               VALUE  "E CONVENIOS".
+               VALUE  "E ".
            05  LINE 12  COLUMN 01 
                VALUE  "                          8 - CONSULTA D".
            05  LINE 12  COLUMN 41 
-               VALUE  "E CIDs".
+               VALUE  "E ".
            05  LINE 13  COLUMN 01 
                VALUE  "                          9 - CONSULTA D".
            05  LINE 13  COLUMN 41 
-               VALUE  "E PACIENTE".
+               VALUE  "E ".
            05  LINE 14  COLUMN 01 
                VALUE  "                         10 - CONSULTA D".
            05  LINE 14  COLUMN 41 
-               VALUE  "E CEP".
+               VALUE  "E ".
            05  LINE 20  COLUMN 01 
                VALUE  "                             OPCAO :".
            05  LINE 20  COLUMN 41 
