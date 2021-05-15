@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. SCMENU.
+       PROGRAM-ID. FPPMEN.
       *AUTHOR."ALAN GUSTAVO".
       **********************************************************
       * MENU DO SISTEMA DE BUSCA E CADASTRO *
