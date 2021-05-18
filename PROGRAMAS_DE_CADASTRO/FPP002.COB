@@ -62,18 +62,18 @@
        01  TELACARGOS.
            05  BLANK SCREEN.
            05  LINE 02  COLUMN 01 
-               VALUE  "--------------------------CADASTRO DE CA".
+               VALUE  "-------------------------------CADASTRO".
            05  LINE 02  COLUMN 41 
-               VALUE  "RGOS-----------------------------------".
+               VALUE  "DE CARGOS-------------------------------".
            05  LINE 05  COLUMN 01 
                VALUE  "   CODIGO DO CARGO:".
-           05  LINE 08  COLUMN 01 
+           05  LINE 07  COLUMN 01 
                VALUE  "   DENOMINACAO DO CARGO:".
-           05  LINE 10  COLUMN 01 
+           05  LINE 09  COLUMN 01 
                VALUE  "   TIPO DE SALARIO:".
-           05  LINE 12  COLUMN 01 
+           05  LINE 11  COLUMN 01 
                VALUE  "   SALARIO BASE:".
-           05  LINE 14  COLUMN 01 
+           05  LINE 13  COLUMN 01 
                VALUE  "   STATUS:".
            05  LINE 22  COLUMN 01 
                VALUE  "   MENSAGEM:".
@@ -84,23 +84,23 @@
                USING  COD
                HIGHLIGHT.
            05  TDENOM
-               LINE 08  COLUMN 25  PIC X(25) 
+               LINE 07  COLUMN 25  PIC X(25) 
                USING  DENOM
                HIGHLIGHT.
            05  TTPSALARIO
-               LINE 10  COLUMN 21  PIC X 
+               LINE 09  COLUMN 21  PIC X 
                USING  TPSALARIO
                HIGHLIGHT.
            05  TXTSALARIO
-               LINE 10  COLUMN 23  PIC X(20)
+               LINE 11  COLUMN 23  PIC X(20)
                USING  TXTTSALARIO
                HIGHLIGHT.
            05  TSALARIOBASE
-               LINE 12  COLUMN 18  PIC 999999.99
+               LINE 11  COLUMN 18  PIC 999999.99
                USING  SALARIOBASE
                HIGHLIGHT.
            05  TSTATUSS
-               LINE 14  COLUMN 12  PIC X(25) 
+               LINE 13  COLUMN 12  PIC X(25) 
                USING  STATUSS
                HIGHLIGHT.
 
