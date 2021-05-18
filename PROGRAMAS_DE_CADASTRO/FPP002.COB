@@ -27,7 +27,7 @@
        01 REGCARG.
            03 COD                PIC 9(03).
            03 DENOM              PIC X(25).
-           03 TPSALARIO          PIC 9(01).
+           03 TPSALARIO          PIC X(01).
            03 SALARIOBASE        PIC 9(06)V99.
            03 STATUSS            PIC X(01).
       *-----------------------------------------------------------------
@@ -40,6 +40,7 @@
        01 ST-ERRO         PIC X(02) VALUE "00".
        01 W-SEL           PIC 9(01) VALUE ZEROS.
        01 IND             PIC 9(02) VALUE ZEROS.
+       01 INDSALARIO      PIC 9(01) VALUE ZEROS.
        01 TXTTSALARIO     PIC X(20) VALUE SPACES.
 
        01 TABSALARIO.
@@ -58,8 +59,8 @@
            03 TXTSTATUS2 PIC X(19) VALUE SPACES.
       *-----------------------------------------------------------------
        SCREEN SECTION.
-
        01  TELACARGOS.
+           05 BLANK SCREEN.
            05  LINE 02  COLUMN 01 
                VALUE  "--------------------------CADASTRO DE CA".
            05  LINE 02  COLUMN 41 
@@ -77,7 +78,14 @@
            05  LINE 22  COLUMN 01 
                VALUE  "   MENSAGEM:".
 
-
+       01 TELATIPOSALARIO.
+           05  LINE 05  COLUMN 50 
+               VALUE  "H-HORISTA".
+           05  LINE 06  COLUMN 50 
+               VALUE  "D-DIARISTA".
+           05  LINE 07  COLUMN 50 
+               VALUE  "M-MENSALISTA".
+     
            05  TCOD
                LINE 05  COLUMN 22  PIC 9(03) 
                USING  COD
@@ -105,9 +113,9 @@
       *--------------------------------------------------------------
        PROCEDURE DIVISION.
        INICIO.
-           MOVE "H-HORISTA"      TO TBSALARIO(1)
-           MOVE "D-DIARISTA"     TO TBSALARIO(2)
-           MOVE "M-MENSALISTA"   TO TBSALARIO(3).
+           MOVE "HORISTA"      TO TBSALARIO(1)
+           MOVE "DIARISTA"     TO TBSALARIO(2)
+           MOVE "MENSALISTA"   TO TBSALARIO(3).
 
        R0.
            OPEN I-O ARQCARG
@@ -138,7 +146,7 @@
            DISPLAY TELACARGOS.
 
        R2.
-           ACCEPT TCOD.
+           ACCEPT TCOD
            IF COD < 1
               MOVE "CODIGO INVALIDO!" TO MENS
               PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -162,41 +170,43 @@
                 PERFORM ROT-MENS THRU ROT-MENS-FIM.
 
        R3.
-           ACCEPT TDENOM.
+           ACCEPT TDENOM
            IF DENOM = SPACES
               MOVE "CAMPO DENOMINACAO DO CARGO VAZIO!" TO MENS
               PERFORM ROT-MENS THRU ROT-MENS-FIM
               GO TO R3.
 
        R4.
-
-           ACCEPT TTPSALARIO.
+           DISPLAY TELATIPOSALARIO
+           ACCEPT TTPSALARIO
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01
                 DISPLAY TELACARGOS
                 GO TO R3.
 
            IF TPSALARIO = "H"
-               MOVE 1 TO IND
-           IF TPSALARIO = "M"
-               MOVE 2 TO IND
-           IF TPSALARIO = "D"
-               MOVE 3 TO IND
+               ADD 1 TO INDSALARIO
+           ELSE IF TPSALARIO = "D"
+               ADD 2 TO INDSALARIO
+           ELSE IF TPSALARIO = "M"
+               ADD 3 TO INDSALARIO
            ELSE
                 MOVE "*** OPCAO INVALIDA ***" TO MENS
                 PERFORM ROT-MENS THRU ROT-MENS-FIM
                 GO TO R4.
        R4A.
-           MOVE TBSALARIO(IND) TO TXTTSALARIO
+           MOVE TBSALARIO(INDSALARIO) TO TXTTSALARIO
            DISPLAY TXTSALARIO.
+           
+
        R5.
-           ACCEPT TSALARIOBASE.
+           ACCEPT TSALARIOBASE
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01
               GO TO R4.
 
        R6.
-           ACCEPT TSTATUSS.
+           ACCEPT TSTATUSS
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01
               GO TO R3.
@@ -213,14 +223,9 @@
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO R6
            ELSE
-              DISPLAY TELACARGOS.
+              DISPLAY TELACARGOS
               MOVE 1 TO IND
               DISPLAY (14 , 12) TXTSTATUS2.
-
-
-
-
-
 
 
       * ------------- VERICAR SE E ALTERACAO -----------------
@@ -228,8 +233,8 @@
                 GO TO ALT-OPC.
        INC-OPC.
                 MOVE "S" TO W-OPCAO
-                DISPLAY (23, 40) "DADOS OK (S/N) : ".
-                ACCEPT (23, 57) W-OPCAO WITH UPDATE
+                DISPLAY (22, 40) "DADOS OK (S/N) : ".
+                ACCEPT (22, 57) W-OPCAO WITH UPDATE
                 IF W-OPCAO = "N" OR "n"
                    MOVE "*** DADOS RECUSADOS PELO OPERADOR ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -259,9 +264,9 @@
       *****************************************
       *
        ACE-001.
-                DISPLAY (23, 12)
+                DISPLAY (22, 12)
                      "N=NOVO CARGO   A=ALTERAR   E=EXCLUIR"
-                ACCEPT (23, 55) W-OPCAO
+                ACCEPT (22, 55) W-OPCAO
                 IF W-OPCAO NOT = "N" AND W-OPCAO NOT = "A" 
                     AND W-OPCAO NOT = "E" 
                     GO TO ACE-001.
@@ -275,8 +280,8 @@
                       GO TO R2.
       *
        EXC-OPC.
-                DISPLAY (23, 40) "EXCLUIR   (S/N) : ".
-                ACCEPT (23, 57) W-OPCAO
+                DISPLAY (22, 40) "EXCLUIR   (S/N) : ".
+                ACCEPT (22, 57) W-OPCAO
                 IF W-OPCAO = "N" OR "n"
                    MOVE "*** REGISTRO NAO EXCLUIDO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -297,8 +302,8 @@
                 GO TO ROT-FIM.
       *
        ALT-OPC.
-                DISPLAY (23, 40) "ALTERAR  (S/N) : ".
-                ACCEPT (23, 57) W-OPCAO
+                DISPLAY (22, 40) "ALTERAR  (S/N) : ".
+                ACCEPT (22, 57) W-OPCAO
                 IF W-OPCAO = "N" OR "n"
                    MOVE "*** INFORMACOES NAO ALTERADAS *** " TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -325,14 +330,14 @@
        ROT-MENS.
                 MOVE ZEROS TO W-CONT.
        ROT-MENS1.
-               DISPLAY (23, 12) MENS.
+               DISPLAY (22, 12) MENS.
        ROT-MENS2.
                 ADD 1 TO W-CONT
                 IF W-CONT < 3000
                    GO TO ROT-MENS2
                 ELSE
                    MOVE SPACES TO MENS
-                   DISPLAY (23, 12) MENS.
+                   DISPLAY (22, 12) MENS.
        ROT-MENS-FIM.
                 EXIT.
        FIM-ROT-TEMPO.
