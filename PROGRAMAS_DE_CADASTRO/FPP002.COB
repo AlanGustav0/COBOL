@@ -26,7 +26,7 @@
                  VALUE OF FILE-ID IS "ARQCARG.DAT".
        01 REGCARG.
            03 COD                PIC 9(03).
-           03 DENOM              PIC X(25).
+           03 DENOM              PIC X(45).
            03 TPSALARIO          PIC X(01).
            03 SALARIOBASE        PIC 9(06)V99.
            03 STATUSS            PIC X(01).
@@ -84,7 +84,7 @@
                USING  COD
                HIGHLIGHT.
            05  TDENOM
-               LINE 07  COLUMN 25  PIC X(25) 
+               LINE 07  COLUMN 25  PIC X(45) 
                USING  DENOM
                HIGHLIGHT.
            05  TTPSALARIO
@@ -92,7 +92,7 @@
                USING  TPSALARIO
                HIGHLIGHT.
            05  TXTSALARIO
-               LINE 11  COLUMN 23  PIC X(20)
+               LINE 09  COLUMN 23  PIC X(20)
                USING  TXTTSALARIO
                HIGHLIGHT.
            05  TSALARIOBASE
@@ -105,19 +105,19 @@
                HIGHLIGHT.
 
            01 TELATIPOSALARIO.
-           05  LINE 05  COLUMN 50 
+           05  LINE 15  COLUMN 50 
                VALUE  "H-HORISTA".
-           05  LINE 06  COLUMN 50 
+           05  LINE 16  COLUMN 50 
                VALUE  "D-DIARISTA".
-           05  LINE 07  COLUMN 50 
+           05  LINE 17  COLUMN 50 
                VALUE  "M-MENSALISTA".
 
            01 TELASTATUS.
-           05  LINE 05  COLUMN 50 
+           05  LINE 15  COLUMN 50 
                VALUE  "ATIVA".
-           05  LINE 06  COLUMN 50 
+           05  LINE 16  COLUMN 50 
                VALUE  "SUSPENSA".
-           05  LINE 07  COLUMN 50 
+           05  LINE 17  COLUMN 50 
                VALUE  "DESATIVADA".
       *--------------------------------------------------------------
        PROCEDURE DIVISION.
@@ -235,7 +235,7 @@
            ELSE
               DISPLAY TELACARGOS.
               MOVE 1 TO IND
-              DISPLAY (14 , 12) TXTSTATUS2.
+              DISPLAY (13 , 12) TXTSTATUS2.
 
 
       * ------------- VERICAR SE E ALTERACAO -----------------
