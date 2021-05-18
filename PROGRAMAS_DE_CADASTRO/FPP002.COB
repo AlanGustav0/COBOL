@@ -60,7 +60,7 @@
       *-----------------------------------------------------------------
        SCREEN SECTION.
        01  TELACARGOS.
-           05 BLANK SCREEN.
+           05  BLANK SCREEN.
            05  LINE 02  COLUMN 01 
                VALUE  "--------------------------CADASTRO DE CA".
            05  LINE 02  COLUMN 41 
@@ -78,13 +78,6 @@
            05  LINE 22  COLUMN 01 
                VALUE  "   MENSAGEM:".
 
-       01 TELATIPOSALARIO.
-           05  LINE 05  COLUMN 50 
-               VALUE  "H-HORISTA".
-           05  LINE 06  COLUMN 50 
-               VALUE  "D-DIARISTA".
-           05  LINE 07  COLUMN 50 
-               VALUE  "M-MENSALISTA".
      
            05  TCOD
                LINE 05  COLUMN 22  PIC 9(03) 
@@ -110,6 +103,22 @@
                LINE 14  COLUMN 12  PIC X(25) 
                USING  STATUSS
                HIGHLIGHT.
+
+           01 TELATIPOSALARIO.
+           05  LINE 05  COLUMN 50 
+               VALUE  "H-HORISTA".
+           05  LINE 06  COLUMN 50 
+               VALUE  "D-DIARISTA".
+           05  LINE 07  COLUMN 50 
+               VALUE  "M-MENSALISTA".
+
+           01 TELASTATUS.
+           05  LINE 05  COLUMN 50 
+               VALUE  "ATIVA".
+           05  LINE 06  COLUMN 50 
+               VALUE  "SUSPENSA".
+           05  LINE 07  COLUMN 50 
+               VALUE  "DESATIVADA".
       *--------------------------------------------------------------
        PROCEDURE DIVISION.
        INICIO.
@@ -146,7 +155,7 @@
            DISPLAY TELACARGOS.
 
        R2.
-           ACCEPT TCOD
+           ACCEPT TCOD.
            IF COD < 1
               MOVE "CODIGO INVALIDO!" TO MENS
               PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -170,7 +179,7 @@
                 PERFORM ROT-MENS THRU ROT-MENS-FIM.
 
        R3.
-           ACCEPT TDENOM
+           ACCEPT TDENOM.
            IF DENOM = SPACES
               MOVE "CAMPO DENOMINACAO DO CARGO VAZIO!" TO MENS
               PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -178,12 +187,11 @@
 
        R4.
            DISPLAY TELATIPOSALARIO
-           ACCEPT TTPSALARIO
+           ACCEPT TTPSALARIO.
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01
                 DISPLAY TELACARGOS
-                GO TO R3.
-
+                GO TO R4.
            IF TPSALARIO = "H"
                ADD 1 TO INDSALARIO
            ELSE IF TPSALARIO = "D"
@@ -195,18 +203,20 @@
                 PERFORM ROT-MENS THRU ROT-MENS-FIM
                 GO TO R4.
        R4A.
+           DISPLAY TELACARGOS
            MOVE TBSALARIO(INDSALARIO) TO TXTTSALARIO
            DISPLAY TXTSALARIO.
            
 
        R5.
-           ACCEPT TSALARIOBASE
+           ACCEPT TSALARIOBASE.
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01
               GO TO R4.
 
        R6.
-           ACCEPT TSTATUSS
+           DISPLAY TELASTATUS
+           ACCEPT TSTATUSS.
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01
               GO TO R3.
@@ -223,7 +233,7 @@
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO R6
            ELSE
-              DISPLAY TELACARGOS
+              DISPLAY TELACARGOS.
               MOVE 1 TO IND
               DISPLAY (14 , 12) TXTSTATUS2.
 
@@ -330,14 +340,14 @@
        ROT-MENS.
                 MOVE ZEROS TO W-CONT.
        ROT-MENS1.
-               DISPLAY (22, 12) MENS.
+               DISPLAY (22, 20) MENS.
        ROT-MENS2.
                 ADD 1 TO W-CONT
                 IF W-CONT < 3000
                    GO TO ROT-MENS2
                 ELSE
                    MOVE SPACES TO MENS
-                   DISPLAY (22, 12) MENS.
+                   DISPLAY (22, 20) MENS.
        ROT-MENS-FIM.
                 EXIT.
        FIM-ROT-TEMPO.
