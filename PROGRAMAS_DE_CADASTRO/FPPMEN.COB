@@ -24,7 +24,7 @@
        01 TAB-PROGR-R.
            03 FILLER PIC X(07) VALUE "FPT001".
            03 FILLER PIC X(07) VALUE "FPP002".
-           03 FILLER PIC X(07) VALUE "       ".
+           03 FILLER PIC X(07) VALUE "FPP009".
            03 FILLER PIC X(07) VALUE "       ".
            03 FILLER PIC X(07) VALUE "       ".
            03 FILLER PIC X(07) VALUE "SMP040".
@@ -59,7 +59,7 @@
            05  LINE 07  COLUMN 01 
                VALUE  "                          3 - CADASTRO D".
            05  LINE 07  COLUMN 41 
-               VALUE  "E".
+               VALUE  "E CEP".
            05  LINE 08  COLUMN 01 
                VALUE  "                          4 - CADASTRO D".
            05  LINE 08  COLUMN 41 
