@@ -40,7 +40,7 @@
        77 W-OPCAO         PIC X(01) VALUE SPACES.
        77 W-ACT           PIC 9(02) VALUE ZEROS.
        77 MENS            PIC X(50) VALUE SPACES.
-       77 LIMPA           PIC X(50) VALUE SPACES. 
+       01 LIMPA             PIC X(55) VALUE SPACES.
        01 ST-ERRO         PIC X(02) VALUE "00".
        01 W-SEL           PIC 9(01) VALUE ZEROS.
        01 IND             PIC 9(02) VALUE ZEROS.
@@ -69,8 +69,14 @@
                VALUE  "   SALARIO BASE:".
            05  LINE 13  COLUMN 01 
                VALUE  "   STATUS:".
-           05  LINE 22  COLUMN 01 
-               VALUE  "   MENSAGEM:".
+           05  LINE 21  COLUMN 01
+               VALUE  "              OPCAO :   (E=ENCERRA     P".
+           05  LINE 21  COLUMN 41
+               VALUE  "=PROXIMO     A=ANTERIOR )".
+           05  LINE 22  COLUMN 41
+               VALUE  "   ==>            <==".
+           05  LINE 23  COLUMN 01
+               VALUE  " MENSAGEM :".
            05  TCOD
                LINE 05  COLUMN 22  PIC 9(03) 
                USING  COD
