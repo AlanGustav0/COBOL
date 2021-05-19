@@ -28,7 +28,7 @@
            03 FILLER PIC X(07) VALUE "       ".
            03 FILLER PIC X(07) VALUE "       ".
            03 FILLER PIC X(07) VALUE "SMP040".
-           03 FILLER PIC X(07) VALUE "       ".
+           03 FILLER PIC X(07) VALUE "SMP041".
            03 FILLER PIC X(07) VALUE "       ".
            03 FILLER PIC X(07) VALUE "       ".
            03 FILLER PIC X(07) VALUE "       ".
@@ -75,7 +75,7 @@
            05  LINE 11  COLUMN 01 
                VALUE  "                          7 - CONSULTA D".
            05  LINE 11  COLUMN 41 
-               VALUE  "E ".
+               VALUE  "E CARGOS".
            05  LINE 12  COLUMN 01 
                VALUE  "                          8 - CONSULTA D".
            05  LINE 12  COLUMN 41 
