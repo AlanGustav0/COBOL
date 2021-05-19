@@ -192,13 +192,13 @@
        ROT-MENS.
            MOVE ZEROS TO W-CONT.
        ROT-MENS1.
-           DISPLAY (22, 13) MENS.
+           DISPLAY (23, 13) MENS.
        ROT-MENS2.
            ADD 1 TO W-CONT
            IF W-CONT < 1000
               GO TO ROT-MENS2
            ELSE
-              DISPLAY (22, 12) LIMPA.
+              DISPLAY (23, 12) LIMPA.
        ROT-MENS-FIM.
            EXIT.
        FIM-ROT-MENS.
