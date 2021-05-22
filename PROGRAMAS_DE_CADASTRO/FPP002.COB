@@ -11,32 +11,31 @@
                      DECIMAL-POINT IS COMMA.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-       SELECT ARQCARG ASSIGN TO DISK
+           SELECT ARQCARG ASSIGN TO DISK
                       ORGANIZATION IS INDEXED
-                      ACCESS MODE IS DYNAMIC
-                      RECORD KEY IS COD
-                      ALTERNATE RECORD KEY IS DENOM
-                      WITH DUPLICATES
-                      FILE STATUS IS ST-ERRO. 
+                      ACCESS MODE  IS DYNAMIC
+                      RECORD KEY   IS COD
+                      ALTERNATE RECORD KEY IS DENOM WITH DUPLICATES
+                      FILE STATUS IS ST-ERRO.
       *-----------------------------------------------------------------
        DATA DIVISION.
        FILE SECTION.
        FD ARQCARG
-                 LABEL RECORD IS STANDARD
-                 VALUE OF FILE-ID IS "ARQCARG.DAT".
+              LABEL RECORD IS STANDARD
+              VALUE OF FILE-ID IS "ARQCARG.DAT".
        01 REGCARG.
-           03 COD                PIC 9(03).
-           03 DENOM              PIC X(45).
-           03 TPSALARIO          PIC X(01).
-           03 SALARIOBASE        PIC 9(06)V99.
-           03 STATUSS            PIC X(01).
+          03 COD                PIC 9(03).
+          03 DENOM              PIC X(45).
+          03 TPSALARIO          PIC X(01).
+          03 SALARIOBASE        PIC 9(06)V99.
+          03 CARGSTATUS         PIC X(01).
       *-----------------------------------------------------------------
        WORKING-STORAGE SECTION.
        77 W-CONT          PIC 9(06) VALUE ZEROS.
        77 W-OPCAO         PIC X(01) VALUE SPACES.
        77 W-ACT           PIC 9(02) VALUE ZEROS.
        77 MENS            PIC X(50) VALUE SPACES.
-       77 LIMPA           PIC X(50) VALUE SPACES. 
+       77 LIMPA           PIC X(50) VALUE SPACES.
        01 ST-ERRO         PIC X(02) VALUE "00".
        01 W-SEL           PIC 9(01) VALUE ZEROS.
        01 IND             PIC 9(02) VALUE ZEROS.
@@ -61,34 +60,34 @@
        SCREEN SECTION.
        01  TELACARGOS.
            05  BLANK SCREEN.
-           05  LINE 02  COLUMN 01 
+           05  LINE 02  COLUMN 01
                VALUE  "-------------------------------CADASTRO".
-           05  LINE 02  COLUMN 41 
+           05  LINE 02  COLUMN 41
                VALUE  "DE CARGOS-------------------------------".
-           05  LINE 05  COLUMN 01 
+           05  LINE 05  COLUMN 01
                VALUE  "   CODIGO DO CARGO:".
-           05  LINE 07  COLUMN 01 
+           05  LINE 07  COLUMN 01
                VALUE  "   DENOMINACAO DO CARGO:".
-           05  LINE 09  COLUMN 01 
+           05  LINE 09  COLUMN 01
                VALUE  "   TIPO DE SALARIO:".
-           05  LINE 11  COLUMN 01 
+           05  LINE 11  COLUMN 01
                VALUE  "   SALARIO BASE:".
-           05  LINE 13  COLUMN 01 
+           05  LINE 13  COLUMN 01
                VALUE  "   STATUS:".
-           05  LINE 22  COLUMN 01 
+           05  LINE 22  COLUMN 01
                VALUE  "   MENSAGEM:".
 
-     
+
            05  TCOD
-               LINE 05  COLUMN 22  PIC 9(03) 
+               LINE 05  COLUMN 22  PIC 9(03)
                USING  COD
                HIGHLIGHT.
            05  TDENOM
-               LINE 07  COLUMN 25  PIC X(45) 
+               LINE 07  COLUMN 25  PIC X(45)
                USING  DENOM
                HIGHLIGHT.
            05  TTPSALARIO
-               LINE 09  COLUMN 21  PIC X 
+               LINE 09  COLUMN 21  PIC X
                USING  TPSALARIO
                HIGHLIGHT.
            05  TXTSALARIO
@@ -100,24 +99,24 @@
                USING  SALARIOBASE
                HIGHLIGHT.
            05  TSTATUSS
-               LINE 13  COLUMN 12  PIC X(25) 
-               USING  STATUSS
+               LINE 13  COLUMN 12  PIC X(25)
+               USING  CARGSTATUS
                HIGHLIGHT.
 
            01 TELATIPOSALARIO.
-           05  LINE 15  COLUMN 50 
+           05  LINE 15  COLUMN 50
                VALUE  "H-HORISTA".
-           05  LINE 16  COLUMN 50 
+           05  LINE 16  COLUMN 50
                VALUE  "D-DIARISTA".
-           05  LINE 17  COLUMN 50 
+           05  LINE 17  COLUMN 50
                VALUE  "M-MENSALISTA".
 
            01 TELASTATUS.
-           05  LINE 15  COLUMN 50 
+           05  LINE 15  COLUMN 50
                VALUE  "ATIVA".
-           05  LINE 16  COLUMN 50 
+           05  LINE 16  COLUMN 50
                VALUE  "SUSPENSA".
-           05  LINE 17  COLUMN 50 
+           05  LINE 17  COLUMN 50
                VALUE  "DESATIVADA".
       *--------------------------------------------------------------
        PROCEDURE DIVISION.
@@ -128,7 +127,7 @@
 
        R0.
            OPEN I-O ARQCARG
-           IF ST-ERRO NOT = "00"  
+           IF ST-ERRO NOT = "00"
               IF ST-ERRO = "30"
                  OPEN OUTPUT ARQCARG
                  CLOSE ARQCARG
@@ -148,8 +147,8 @@
                  NEXT SENTENCE.
 
       *------------[ INICIALIZACAO DAS VARIAVEIS ]----------------------
-       R1. 
-           MOVE SPACES TO DENOM STATUSS TXTTSALARIO
+       R1.
+           MOVE SPACES TO DENOM CARGSTATUS TXTTSALARIO
            MOVE ZEROS TO COD W-SEL SALARIOBASE
 
            DISPLAY TELACARGOS.
@@ -206,7 +205,7 @@
            DISPLAY TELACARGOS
            MOVE TBSALARIO(INDSALARIO) TO TXTTSALARIO
            DISPLAY TXTSALARIO.
-           
+
 
        R5.
            ACCEPT TSALARIOBASE.
@@ -222,8 +221,8 @@
               GO TO R3.
 
        R6A.
-           MOVE TBSTATUS(IND) TO TXTSTATUS 
-           IF TXTSTATUS1 NOT = STATUSS
+           MOVE TBSTATUS(IND) TO TXTSTATUS
+           IF TXTSTATUS1 NOT = CARGSTATUS
               ADD 1 TO IND
               IF IND < 4
                  GO TO R6A
@@ -239,7 +238,7 @@
 
 
       * ------------- VERICAR SE E ALTERACAO -----------------
-           IF W-SEL = 1 
+           IF W-SEL = 1
                 GO TO ALT-OPC.
        INC-OPC.
                 MOVE "S" TO W-OPCAO
@@ -256,14 +255,13 @@
        INC-WR1.
                 WRITE REGCARG
                 IF ST-ERRO = "00" OR "02"
-                      MOVE "*** CARGO GRAVADO *** " TO MENS
+                      MOVE "*** DADOS GRAVADOS *** " TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO R1.
                 IF ST-ERRO = "22"
-                  MOVE "* CARGO JA EXISTE,DADOS NAO GRAVADOS *" 
-                  TO MENS
+                  MOVE "* CARGO JA EXISTE,DADOS NAO GRAVADOS *" TO MENS
                   PERFORM ROT-MENS THRU ROT-MENS-FIM
-                      GO TO R1
+                  GO TO R1
                 ELSE
                       MOVE "ERRO NA GRAVACAO DO ARQUIVO ARQCARG" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -277,8 +275,8 @@
                 DISPLAY (22, 12)
                      "N=NOVO CARGO   A=ALTERAR   E=EXCLUIR"
                 ACCEPT (22, 55) W-OPCAO
-                IF W-OPCAO NOT = "N" AND W-OPCAO NOT = "A" 
-                    AND W-OPCAO NOT = "E" 
+                IF W-OPCAO NOT = "N" AND W-OPCAO NOT = "A"
+                    AND W-OPCAO NOT = "E"
                     GO TO ACE-001.
                 MOVE SPACES TO MENS
                 DISPLAY (23, 12) MENS
@@ -303,7 +301,7 @@
        EXC-DL1.
                 DELETE ARQCARG RECORD
                 IF ST-ERRO = "00"
-                   MOVE "*** REGISTRO DE CARGO EXCLUIDO ***" 
+                   MOVE "*** REGISTRO DE CARGO EXCLUIDO ***"
                    TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO R1.
@@ -328,7 +326,7 @@
                    MOVE "*** REGISTRO ALTERADO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO R1.
-                MOVE "ERRO NA EXCLUSAO DO REGISTRO DE CEP"   TO MENS
+                MOVE "ERRO NA EXCLUSAO DO REGISTRO DE CARGO"   TO MENS
                 PERFORM ROT-MENS THRU ROT-MENS-FIM
                 GO TO ROT-FIM.
       *----------------------------------------------------------------
@@ -336,7 +334,7 @@
            CLOSE ARQCARG.
            STOP RUN.
 
-      *---------[ ROTINA DE MENSAGEM ]---------------------   
+      *---------[ ROTINA DE MENSAGEM ]---------------------
        ROT-MENS.
                 MOVE ZEROS TO W-CONT.
        ROT-MENS1.
