@@ -25,7 +25,7 @@
            03 FILLER PIC X(07) VALUE "FPT001".
            03 FILLER PIC X(07) VALUE "FPP002".
            03 FILLER PIC X(07) VALUE "FPP009".
-           03 FILLER PIC X(07) VALUE "       ".
+           03 FILLER PIC X(07) VALUE "FPP004".
            03 FILLER PIC X(07) VALUE "       ".
            03 FILLER PIC X(07) VALUE "SMP040".
            03 FILLER PIC X(07) VALUE "SMP041".
@@ -63,7 +63,7 @@
            05  LINE 08  COLUMN 01 
                VALUE  "                          4 - CADASTRO D".
            05  LINE 08  COLUMN 41 
-               VALUE  "E ".
+               VALUE  "E FUNCIONARIOS".
            05  LINE 09  COLUMN 01 
                VALUE  "                          5 - CADASTRO D".
            05  LINE 09  COLUMN 41 

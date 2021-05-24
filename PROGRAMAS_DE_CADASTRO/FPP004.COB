@@ -259,9 +259,9 @@
                LINE 04  COLUMN 67  PIC 9(03)
                USING  CODDEP
                HIGHLIGHT.
-           05  TDENOM
+           05  TDENOMINACAO
                LINE 06  COLUMN 20  PIC X(25)
-               USING  DENOM
+               USING  DENOMINACAO
                HIGHLIGHT.
            05  TDEPSTATUS
                LINE 06  COLUMN 67  PIC X(10)
@@ -277,9 +277,9 @@
                LINE 09 COLUMN 13  PIC 9(03)
                USING CODIGOCARG
                HIGHLIGHT.
-           05  TDENOMINACAO
+           05  TDENOM
                LINE 09 COLUMN 45 PIC X(25)
-               USING DENOMINACAO
+               USING DENOM
                HIGHLIGHT.
            05  TTPSALARIO
                LINE 10  COLUMN 18  PIC X
