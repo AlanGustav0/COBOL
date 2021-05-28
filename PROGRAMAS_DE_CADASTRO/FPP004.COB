@@ -211,7 +211,7 @@
                USING  NOME
                HIGHLIGHT.
            05  TDATANASC
-               LINE 03  COLUMN 67  PIC 99.99.9999
+               LINE 03  COLUMN 67  PIC 99/99/9999
                USING  DATANASC
                HIGHLIGHT.
            05  TSEXO
@@ -239,7 +239,7 @@
                USING  QTDDEPENDENTES
                HIGHLIGHT.
            05  TIMPRENDA
-               LINE 13  COLUMN 37 PIC X(01)
+               LINE 13  COLUMN 39 PIC X(01)
                USING  IMPRENDA
                HIGHLIGHT.
            05  TFUNCSTATUS
