@@ -27,7 +27,7 @@
            03 FILLER PIC X(07) VALUE "FPP009".
            03 FILLER PIC X(07) VALUE "FPP004".
            03 FILLER PIC X(07) VALUE "FPP003".
-           03 FILLER PIC X(07) VALUE "SMP040".
+           03 FILLER PIC X(07) VALUE "FPP011".
            03 FILLER PIC X(07) VALUE "SMP041".
            03 FILLER PIC X(07) VALUE "       ".
            03 FILLER PIC X(07) VALUE "       ".
@@ -79,18 +79,14 @@
            05  LINE 12  COLUMN 01 
                VALUE  "                          8 - CONSULTA D".
            05  LINE 12  COLUMN 41 
-               VALUE  "E ".
-           05  LINE 13  COLUMN 01 
+               VALUE  "E FUNCIONARIOS".
+           05  LINE 12  COLUMN 01 
                VALUE  "                          9 - CONSULTA D".
            05  LINE 13  COLUMN 41 
-               VALUE  "E ".
+               VALUE  "E DEPENDENTES".
            05  LINE 14  COLUMN 01 
-               VALUE  "                         10 - CONSULTA D".
-           05  LINE 14  COLUMN 41 
-               VALUE  "E ".
-           05  LINE 20  COLUMN 01 
                VALUE  "                             OPCAO :".
-           05  LINE 20  COLUMN 41 
+           05  LINE 14  COLUMN 41 
                VALUE  " ( 00 - ENCERRA )".
            05  LINE 23  COLUMN 01 
                VALUE  " MENSAGEM :".
