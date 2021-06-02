@@ -11,25 +11,25 @@
              DECIMAL-POINT IS COMMA.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT ARQDEP ASSIGN TO DISK
+           SELECT ARQCARG ASSIGN TO DISK
                       ORGANIZATION IS INDEXED
                       ACCESS MODE  IS DYNAMIC
-                      RECORD KEY   IS CODIGO
-                      ALTERNATE RECORD KEY IS DENOMINACAO
-                      WITH DUPLICATES
-                      FILE STATUS  IS ST-ERRO.
+                      RECORD KEY   IS COD
+                      ALTERNATE RECORD KEY IS DENOM WITH DUPLICATES
+                      FILE STATUS IS ST-ERRO.
 
        DATA DIVISION.
        FILE SECTION.
-       FD ARQDEP
-               LABEL RECORD IS STANDARD
-               VALUE OF FILE-ID IS "ARQDEP.DAT".
-       01 REGDEP.
-          03 CODIGO                   PIC 9(03).
-          03 DENOMINACAO              PIC X(25).
-          03 DEPSTATUS                PIC X(01).
-          03 TPHIERARC                PIC 9(02).
-              
+       FD ARQCARG
+              LABEL RECORD IS STANDARD
+              VALUE OF FILE-ID IS "ARQCARG.DAT".
+       01 REGCARG.
+          03 COD                PIC 9(03).
+          03 DENOM              PIC X(45).
+          03 TPSALARIO          PIC X(01).
+          03 SALARIOBASE        PIC 9(06)V99.
+          03 CARGSTATUS         PIC X(01).
+
       *-----------------------------------------------------------------
        WORKING-STORAGE SECTION.
        01 W-SEL        PIC 9(01) VALUE ZEROS.
@@ -42,12 +42,13 @@
        01 SOLIC        PIC X(20) VALUE SPACES.
        01 CONLIN       PIC 9(03) VALUE 001.
        01 CODENTR      PIC 9(03) VALUE ZEROS.
-       01 DENOENTR     PIC X(22) VALUE SPACES.
-       01 IND             PIC 9(02) VALUE ZEROS.
-       01 TXTTHIERARC  PIC X(30) VALUE SPACES. 
+       01 DENOMENTR    PIC X(45) VALUE SPACES.
+       01 IND          PIC 9(02) VALUE ZEROS.
+       01 INDSALARIO   PIC 9(01) VALUE ZEROS.
+       01 TXTTSALARIO  PIC X(20) VALUE SPACES.
 
-       01 TABHIERARC.
-           03 TBHIERARC      PIC X(45) OCCURS 9 TIMES.
+       01 TABSALARIO.
+           03 TBSALARIO      PIC X(20) OCCURS 3 TIMES.
 
        01 TABSTATUS.
            03 FILLER PIC X(15) VALUE "ATIVA".
@@ -62,78 +63,75 @@
       *-----------------------------------------------------------------
        01 DET2.
           03 FILLER          PIC X(02) VALUE SPACES.
-          03 DETCODIGO       PIC 999.
-          03 FILLER          PIC X(06) VALUE SPACES.
-          03 DETDENOMINACAO  PIC X(22) VALUE SPACES.
+          03 DETCOD          PIC 999.
           03 FILLER          PIC X(02) VALUE SPACES.
-          03 DETHIERARC      PIC X(30) VALUE SPACES.
+          03 DETDENOM        PIC X(20) VALUE SPACES.
           03 FILLER          PIC X(02) VALUE SPACES.
-          03 DETDEPSTATUS    PIC X(20) VALUE SPACES.
+          03 DETTPSALARIO    PIC X(20) VALUE SPACES.
+          03 FILLER          PIC X(02) VALUE SPACES.
+          03 DETSALARIOBASE  PIC 9(06)V99.
+          03 FILLER          PIC X(02) VALUE SPACES.
+          03 DETCARGSTATUS   PIC X(20) VALUE SPACES.
 
 
        SCREEN SECTION.
-
-       01  TELACONSDEP.
+       01  TELACONSCARGO.
            05 BLANK SCREEN.
-           05  LINE 02  COLUMN 01 
-               VALUE  "-------------------------|CONSULTA DE DE".
-           05  LINE 02  COLUMN 41 
-               VALUE  "PARTAMENTO|-----------------------------".
-           05  LINE 04  COLUMN 01 
-               VALUE  "  COD.DEP |    DENOMINACAO      |".
-           05  LINE 04  COLUMN 41 
-               VALUE  "  NIVEL HIERARC.     |     STATUS".
-           05  LINE 22  COLUMN 01 
+           05  LINE 02  COLUMN 01
+               VALUE  "-------------------------|CONSULTA DE".
+           05  LINE 02  COLUMN 41
+               VALUE  "CARGOS|-----------------------------".
+           05  LINE 04  COLUMN 01
+               VALUE  "  COD |    DENOMINACAO      | TIPO SALARIO ".
+           05  LINE 04  COLUMN 41
+               VALUE  "  |  SALARIO BASE   | STATUS  ".
+           05  LINE 22  COLUMN 01
                VALUE  "  MENSAGEM:".
 
            05  TCODENTR
                LINE 05  COLUMN 03  PIC 9(03)
                USING  CODENTR.
-           05  TDENOENTR
-               LINE 05  COLUMN 20  PIC X(22)
-               USING  DENOENTR.
-        
-           
+           05  TDENOMENTR
+               LINE 05  COLUMN 06  PIC X(45)
+               USING  DENOMENTR.
+
+
       *-----------------------------------------------------------------
        PROCEDURE DIVISION.
        INICIO.
-           MOVE "01-CONSELHO CONSULTIVO "     TO TBHIERARC(1)
-           MOVE "02-CONSELHO FISCAL"          TO TBHIERARC(2)
-           MOVE "03-PRESIDENCIA"              TO TBHIERARC(3)
-           MOVE "04-DIRETORIA ADMINISTRATIVA" TO TBHIERARC(4)
-           MOVE "05-DIRETORIA INDUSTRIAL"     TO TBHIERARC(5)
-           MOVE "06-DIRETORIA COMERCIAL"      TO TBHIERARC(6)
-           MOVE "07-DIRETORIA MARKETING"      TO TBHIERARC(7)
-           MOVE "08-DIRETORIA JURIDICA"       TO TBHIERARC(8)
-           MOVE "09-CONSULTORIA"              TO TBHIERARC(9).
+
+           MOVE "HORISTA"      TO TBSALARIO(1)
+           MOVE "DIARISTA"   TO TBSALARIO(2)
+           MOVE "MENSALISTA"     TO TBSALARIO(3).
+
 
        INC-OP1.
-           OPEN INPUT ARQDEP
+           OPEN INPUT ARQCARG
            IF ST-ERRO NOT = "00"
               IF ST-ERRO = "30"
-                 MOVE "ARQUIVO ARQDEP NAO EXISTE" TO MENS
+                 MOVE "ARQUIVO ARQCARG NAO EXISTE" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO ROT-FIM2
               ELSE
-                 MOVE "ERRO ABERTURA DO ARQUIVO ARQDEP"  TO MENS
+                 MOVE "ERRO ABERTURA DO ARQUIVO ARQCARG"  TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO ROT-FIM2.
 
       *------------[ INICIALIZACAO DAS VARIAVEIS ]----------------------
        INC-001.
-           MOVE SPACES TO DENOENTR 
-           MOVE ZEROS TO CODENTR 
-           
+           MOVE SPACES TO DENOMENTR
+           MOVE ZEROS TO CODENTR
+
       *-------------[VISUALIZACAO DA TELA PRINCIPAL]--------------------
-           DISPLAY  TELACONSDEP.
+           DISPLAY  TELACONSCARGO.
 
        INC-001A.
-           DISPLAY (23, 13)
-            "SOLIC.=> F1=ENCERRA CONSULTA   F2=CONSULTA P/DENOMINACAO."
+           DISPLAY (22, 13)
+            "SOLIC.=> F1=ENCERRA CONSULTA   F2=CONSULTA P/DENOM."
            ACCEPT TCODENTR
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 02
-                      CLOSE ARQDEP
+                      CLOSE ARQCARG
                       GO TO ROT-FIM.
            IF W-ACT = 03
                       GO TO INC-001B.
@@ -141,20 +139,20 @@
                       MOVE "*** FUNCAO NAO DEFINIDA ***" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO INC-001A.
-           MOVE CODENTR TO CODIGO
-           START ARQDEP KEY IS NOT LESS CODIGO INVALID KEY
+           MOVE CODENTR TO COD
+           START ARQCARG KEY IS NOT LESS COD INVALID KEY
                  MOVE "*** CHAVE NAO ENCONTRADA ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO INC-001.
            GO TO INC-RD2.
 
        INC-001B.
-           DISPLAY (23, 13)
-            "SOLIC.=> F1=ENCERRA CONSULTA     F2=CONSULTA P/CODIGO DEP "
-           ACCEPT TDENOENTR
+           DISPLAY (22, 13)
+            "SOLIC.=> F1=ENCERRA CONSULTA     F2=CONSULTA P/COD CARGO "
+           ACCEPT TDENOMENTR
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 02
-                      CLOSE ARQDEP
+                      CLOSE ARQCARG
                       GO TO ROT-FIM.
            IF W-ACT = 03
                       GO TO INC-001B.
@@ -162,44 +160,56 @@
                       MOVE "*** FUNCAO NAO DEFINIDA ***" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO INC-001B.
-           MOVE DENOENTR TO DENOMINACAO
-           START ARQDEP KEY IS NOT LESS DENOMINACAO INVALID KEY
+           MOVE DENOMENTR TO DENOM
+           START ARQCARG KEY IS NOT LESS DENOM INVALID KEY
                  MOVE "*** CHAVE NAO ENCONTRADA ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO INC-001B.
        INC-RD2.
-           DISPLAY (23, 13) LIMPA
-           READ ARQDEP NEXT
+           DISPLAY (22, 13) LIMPA
+           READ ARQCARG NEXT
            IF ST-ERRO NOT = "00"
               IF ST-ERRO = "10"
                  MOVE "*** FIM DO ARQUIVO  ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO NOV-SOL
               ELSE
-                 MOVE "ERRO NA LEITURA DO ARQUIVO ARQDEP"  TO MENS
+                 MOVE "ERRO NA LEITURA DO ARQUIVO ARQCARG"  TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO ROT-FIM
            ELSE
               NEXT SENTENCE.
+       ROT-SAL.
+       
+           IF TPSALARIO = "H"
+               MOVE 1 TO INDSALARIO
+           ELSE
+               IF TPSALARIO = "D"
+                  MOVE 2 TO INDSALARIO
+               ELSE
+                   IF TPSALARIO = "M"
+                      MOVE 3 TO INDSALARIO.
 
        ROT-STATUS.
        
-           IF DEPSTATUS = "A"
+           IF CARGSTATUS = "A"
                MOVE "ATIVA" TO TXTSTATUS
            ELSE
-               IF DEPSTATUS = "S"
+               IF CARGSTATUS = "S"
                   MOVE "SUSPENSA" TO TXTSTATUS
                ELSE
-                   IF DEPSTATUS = "D"
+                   IF CARGSTATUS = "D"
                       MOVE "DESATIVADA" TO TXTSTATUS.
-                 
+               
+
        ROT-MONTAR.
-           MOVE CODIGO      TO DETCODIGO
-           MOVE DENOMINACAO TO DETDENOMINACAO
-           MOVE TBHIERARC(TPHIERARC) TO TXTTHIERARC
-           MOVE TXTTHIERARC   TO DETHIERARC 
-           MOVE TXTSTATUS2    TO DETDEPSTATUS 
-           
+           MOVE COD  TO DETCOD 
+           MOVE DENOM TO DETDENOM
+           MOVE TBSALARIO(INDSALARIO) TO TXTTSALARIO   
+           MOVE TXTTSALARIO  TO DETTPSALARIO
+           MOVE SALARIOBASE TO DETSALARIOBASE
+           MOVE TXTSTATUS2    TO DETCARGSTATUS
+
            COMPUTE LIN = CONLIN + 5
            DISPLAY (LIN, 01) DET2
            ADD 1 TO CONLIN
@@ -209,10 +219,10 @@
        ROT-SOL.
            DISPLAY (22, 13) " *** CONTINUA CONSULTA : . ***"
            MOVE "S" TO W-OPCAO
-           ACCEPT  (23, 38) W-OPCAO  WITH UPDATE
+           ACCEPT  (22, 38) W-OPCAO  WITH UPDATE
            IF W-OPCAO = "S"
                   MOVE 01 TO CONLIN
-                  DISPLAY TELACONSDEP
+                  DISPLAY TELACONSCARGO
                   GO TO INC-RD2.
            IF W-OPCAO NOT = "N"
                   MOVE "*** DIGITE S=SIM   N=NAO ***" TO MENS
@@ -240,7 +250,7 @@
       *
        ROT-FIM.
            DISPLAY (01 01) ERASE.
-           CLOSE ARQDEP.
+           CLOSE ARQCARG.
        ROT-FIM2.
            EXIT PROGRAM.
        ROT-FIM3.
