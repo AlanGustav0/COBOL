@@ -1,8 +1,8 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. FPP012.
+       PROGRAM-ID. FPP014.
       *AUTHOR."ALAN GUSTAVO".
       **************************************************
-      * CONSULTA DE CARGOS *
+      * CONSULTA DE FUNCIONÁRIOS *
       **************************************************
       *----------------------------------------------------------------
        ENVIRONMENT DIVISION.
@@ -11,15 +11,46 @@
              DECIMAL-POINT IS COMMA.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
+           SELECT ARQFUNC ASSIGN TO DISK
+                      ORGANIZATION IS INDEXED
+                      ACCESS MODE IS DYNAMIC
+                      RECORD KEY IS CHAPA
+                      ALTERNATE RECORD KEY IS NOME
+                      WITH DUPLICATES
+                      FILE STATUS IS ST-ERRO.
+
            SELECT ARQCARG ASSIGN TO DISK
                       ORGANIZATION IS INDEXED
                       ACCESS MODE  IS DYNAMIC
                       RECORD KEY   IS COD
                       ALTERNATE RECORD KEY IS DENOM WITH DUPLICATES
                       FILE STATUS IS ST-ERRO.
-
+      *----------------------------------------------------------------
        DATA DIVISION.
        FILE SECTION.
+       FD ARQFUNC
+                 LABEL RECORD IS STANDARD
+                 VALUE OF FILE-ID IS "ARQFUNC.DAT".
+       01 REGFUNC.
+           03 CHAPA             PIC 9(06).
+           03 NOME              PIC X(30).
+           03 DATANASC          PIC 9(08).
+           03 DTNASC REDEFINES DATANASC.
+            05 DIA                 PIC 9(02).
+            05 MES                 PIC 9(02).
+            05 ANO                 PIC 9(04).
+           03 SEXO              PIC X(01).
+           03 GENERO            PIC X(01).
+           03 NIVELSALARIAL     PIC 9(02).
+           03 QTDDEPENDENTES    PIC 9(01).
+           03 IMPRENDA          PIC X(01).
+           03 FUNCSTATUS        PIC X(01).
+           03 CEPFUNC           PIC 9(08).
+           03 CODDEP            PIC 9(03).
+           03 CODIGOCARG        PIC 9(03).
+           03 CEP-COMPLE        PIC X(12).
+           03 CEP-NUMRES        PIC 9(04).
+
        FD ARQCARG
               LABEL RECORD IS STANDARD
               VALUE OF FILE-ID IS "ARQCARG.DAT".
@@ -41,8 +72,8 @@
        01 LIMPA        PIC X(55) VALUE SPACES.
        01 SOLIC        PIC X(20) VALUE SPACES.
        01 CONLIN       PIC 9(03) VALUE 001.
-       01 CODENTR      PIC 9(03) VALUE ZEROS.
-       01 DENOMENTR    PIC X(45) VALUE SPACES.
+       01 CHAPAENTR      PIC 9(03) VALUE ZEROS.
+       01 NOMENTR    PIC X(45) VALUE SPACES.
        01 IND          PIC 9(02) VALUE ZEROS.
        01 INDSALARIO   PIC 9(01) VALUE ZEROS.
        01 TXTTSALARIO  PIC X(20) VALUE SPACES.
@@ -51,9 +82,9 @@
            03 TBSALARIO      PIC X(20) OCCURS 3 TIMES.
 
        01 TABSTATUS.
-           03 FILLER PIC X(15) VALUE "ATIVA".
-           03 FILLER PIC X(15) VALUE "SUSPENSA".
-           03 FILLER PIC X(15) VALUE "DESATIVADA".
+           03 FILLER PIC X(20) VALUE "AATIVA".
+           03 FILLER PIC X(20) VALUE "SSUSPENSA".
+           03 FILLER PIC X(20) VALUE "DDESATIVADA".
 
        01 TABSTATUSX      REDEFINES TABSTATUS.
            03 TBSTATUS    PIC X(15) OCCURS 3 TIMES.
@@ -63,75 +94,91 @@
       *-----------------------------------------------------------------
        01 DET2.
           03 FILLER          PIC X(02) VALUE SPACES.
-          03 DETCOD          PIC 999.
+          03 DETCHAPA        PIC 999999.
           03 FILLER          PIC X(02) VALUE SPACES.
-          03 DETDENOM        PIC X(20) VALUE SPACES.
+          03 DETNOME         PIC X(30) VALUE SPACES.
           03 FILLER          PIC X(02) VALUE SPACES.
-          03 DETTPSALARIO    PIC X(20) VALUE SPACES.
+          03 DETTPSALARIO    PIC X(15) VALUE SPACES.
           03 FILLER          PIC X(02) VALUE SPACES.
           03 DETSALARIOBASE  PIC 9(06)V99.
           03 FILLER          PIC X(02) VALUE SPACES.
-          03 DETCARGSTATUS   PIC X(20) VALUE SPACES.
+          03 DETSTATUS       PIC X(20) VALUE SPACES.
 
 
        SCREEN SECTION.
-       01  TELACONSCARGO.
+       01  TELACONSFUNC.
            05 BLANK SCREEN.
            05  LINE 02  COLUMN 01
                VALUE  "-------------------------|CONSULTA DE".
            05  LINE 02  COLUMN 41
-               VALUE  "CARGOS|-----------------------------".
+               VALUE  "FUNCIONARIOS|---------------------------".
            05  LINE 04  COLUMN 01
-               VALUE  "  COD |    DENOMINACAO      | TIPO SALARIO ".
+               VALUE  "  CHAPA |            NOME               ".
            05  LINE 04  COLUMN 41
-               VALUE  "  |  SALARIO BASE   | STATUS  ".
+               VALUE  "  ".
+           05  LINE 04  COLUMN 41
+               VALUE  "| TIPO SALARIO | SALARIO BASE | STATUS ".
            05  LINE 22  COLUMN 01
                VALUE  "  MENSAGEM:".
 
-           05  TCODENTR
-               LINE 05  COLUMN 03  PIC 9(03)
-               USING  CODENTR.
-           05  TDENOMENTR
-               LINE 05  COLUMN 06  PIC X(45)
-               USING  DENOMENTR.
-
+           05  TCHAPAENTR
+               LINE 05  COLUMN 03  PIC 9(06)
+               USING CHAPAENTR.
+           05  TNOMENTR
+               LINE 05  COLUMN 06  PIC X(30)
+               USING NOMENTR.
+           
 
       *-----------------------------------------------------------------
        PROCEDURE DIVISION.
        INICIO.
 
            MOVE "HORISTA"      TO TBSALARIO(1)
-           MOVE "DIARISTA"   TO TBSALARIO(2)
-           MOVE "MENSALISTA"     TO TBSALARIO(3).
+           MOVE "DIARISTA"     TO TBSALARIO(2)
+           MOVE "MENSALISTA"   TO TBSALARIO(3).
 
 
        INC-OP1.
-           OPEN INPUT ARQCARG
+           OPEN INPUT ARQFUNC
            IF ST-ERRO NOT = "00"
               IF ST-ERRO = "30"
-                 MOVE "ARQUIVO ARQCARG NAO EXISTE" TO MENS
+                 MOVE "ARQUIVO ARQFUNC NAO EXISTE" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO ROT-FIM2
               ELSE
-                 MOVE "ERRO ABERTURA DO ARQUIVO ARQCARG"  TO MENS
+                 MOVE "ERRO ABERTURA DO ARQUIVO ARQFUNC"  TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO ROT-FIM2.
 
+       INC-OP2.
+           OPEN INPUT ARQCARG
+           IF ST-ERRO NOT = "00"
+              IF ST-ERRO = "30"
+                 MOVE "*** ARQUIVO ARQCARG NAO ENCONTRADO **" TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO ROT-FIM
+              ELSE
+                 MOVE "ERRO NA ABERTURA DO ARQUIVO ARQCARG" TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO ROT-FIM
+           ELSE
+                 NEXT SENTENCE.
+
       *------------[ INICIALIZACAO DAS VARIAVEIS ]----------------------
        INC-001.
-           MOVE SPACES TO DENOMENTR
-           MOVE ZEROS TO CODENTR
+           MOVE SPACES TO NOMENTR TPSALARIO
+           MOVE ZEROS TO CHAPAENTR SALARIOBASE
 
       *-------------[VISUALIZACAO DA TELA PRINCIPAL]--------------------
-           DISPLAY  TELACONSCARGO.
+           DISPLAY  TELACONSFUNC.
 
        INC-001A.
            DISPLAY (22, 13)
             "SOLIC.=> F1=ENCERRA CONSULTA   F2=CONSULTA P/DENOM."
-           ACCEPT TCODENTR
+           ACCEPT TCHAPAENTR
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 02
-                      CLOSE ARQCARG
+                      CLOSE ARQFUNC
                       GO TO ROT-FIM.
            IF W-ACT = 03
                       GO TO INC-001B.
@@ -139,8 +186,8 @@
                       MOVE "*** FUNCAO NAO DEFINIDA ***" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO INC-001A.
-           MOVE CODENTR TO COD
-           START ARQCARG KEY IS NOT LESS COD INVALID KEY
+           MOVE CHAPAENTR TO CHAPA
+           START ARQFUNC KEY IS NOT LESS CHAPA INVALID KEY
                  MOVE "*** CHAVE NAO ENCONTRADA ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO INC-001.
@@ -149,10 +196,10 @@
        INC-001B.
            DISPLAY (22, 13)
             "SOLIC.=> F1=ENCERRA CONSULTA     F2=CONSULTA P/COD CARGO "
-           ACCEPT TDENOMENTR
+           ACCEPT TNOMENTR
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 02
-                      CLOSE ARQCARG
+                      CLOSE ARQFUNC
                       GO TO ROT-FIM.
            IF W-ACT = 03
                       GO TO INC-001B.
@@ -160,13 +207,51 @@
                       MOVE "*** FUNCAO NAO DEFINIDA ***" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO INC-001B.
-           MOVE DENOMENTR TO DENOM
-           START ARQCARG KEY IS NOT LESS DENOM INVALID KEY
+           MOVE NOMENTR TO NOME
+           START ARQFUNC KEY IS NOT LESS NOME INVALID KEY
                  MOVE "*** CHAVE NAO ENCONTRADA ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO INC-001B.
        INC-RD2.
            DISPLAY (22, 13) LIMPA
+           READ ARQFUNC NEXT
+           IF ST-ERRO NOT = "00"
+              IF ST-ERRO = "10"
+                 MOVE "*** FIM DO ARQUIVO  ***" TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO NOV-SOL
+              ELSE
+                 MOVE "ERRO NA LEITURA DO ARQUIVO ARQFUNC"  TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO ROT-FIM
+           ELSE
+              NEXT SENTENCE.
+
+
+       ROT-SAL.
+
+           IF TPSALARIO = "H"
+               MOVE 1 TO INDSALARIO
+           ELSE
+               IF TPSALARIO = "D"
+                  MOVE 2 TO INDSALARIO
+               ELSE
+                   IF TPSALARIO = "M"
+                      MOVE 3 TO INDSALARIO.
+
+       ROT-STATUS.
+
+           IF FUNCSTATUS = "A"
+               MOVE "ATIVA" TO TXTSTATUS
+           ELSE
+               IF FUNCSTATUS = "S"
+                  MOVE "SUSPENSA" TO TXTSTATUS
+               ELSE
+                   IF FUNCSTATUS = "D"
+                      MOVE "DESATIVADA" TO TXTSTATUS.
+
+       
+       LER-ARQCARG.
            READ ARQCARG NEXT
            IF ST-ERRO NOT = "00"
               IF ST-ERRO = "10"
@@ -179,36 +264,15 @@
                  GO TO ROT-FIM
            ELSE
               NEXT SENTENCE.
-       ROT-SAL.
-       
-           IF TPSALARIO = "H"
-               MOVE 1 TO INDSALARIO
-           ELSE
-               IF TPSALARIO = "D"
-                  MOVE 2 TO INDSALARIO
-               ELSE
-                   IF TPSALARIO = "M"
-                      MOVE 3 TO INDSALARIO.
 
-       ROT-STATUS.
-       
-           IF CARGSTATUS = "A"
-               MOVE "ATIVA" TO TXTSTATUS
-           ELSE
-               IF CARGSTATUS = "S"
-                  MOVE "SUSPENSA" TO TXTSTATUS
-               ELSE
-                   IF CARGSTATUS = "D"
-                      MOVE "DESATIVADA" TO TXTSTATUS.
-               
 
        ROT-MONTAR.
-           MOVE COD  TO DETCOD 
-           MOVE DENOM TO DETDENOM
-           MOVE TBSALARIO(INDSALARIO) TO TXTTSALARIO   
-           MOVE TXTTSALARIO  TO DETTPSALARIO
+           MOVE CHAPA  TO DETCHAPA
+           MOVE NOME TO DETNOME
+           MOVE TBSALARIO(INDSALARIO) TO TXTTSALARIO
+           MOVE TXTTSALARIO TO DETTPSALARIO
            MOVE SALARIOBASE TO DETSALARIOBASE
-           MOVE TXTSTATUS2    TO DETCARGSTATUS
+           MOVE TXTSTATUS2  TO DETSTATUS
 
            COMPUTE LIN = CONLIN + 5
            DISPLAY (LIN, 01) DET2
@@ -222,7 +286,7 @@
            ACCEPT  (22, 38) W-OPCAO  WITH UPDATE
            IF W-OPCAO = "S"
                   MOVE 01 TO CONLIN
-                  DISPLAY TELACONSCARGO
+                  DISPLAY TELACONSFUNC
                   GO TO INC-RD2.
            IF W-OPCAO NOT = "N"
                   MOVE "*** DIGITE S=SIM   N=NAO ***" TO MENS
@@ -250,7 +314,7 @@
       *
        ROT-FIM.
            DISPLAY (01 01) ERASE.
-           CLOSE ARQCARG.
+           CLOSE ARQFUNC ARQCARG.
        ROT-FIM2.
            EXIT PROGRAM.
        ROT-FIM3.

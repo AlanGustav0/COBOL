@@ -14,7 +14,7 @@
                       ORGANIZATION IS INDEXED
                       ACCESS MODE IS DYNAMIC
                       RECORD KEY IS CHAPA
-                      ALTERNATE RECORD KEY IS NOME 
+                      ALTERNATE RECORD KEY IS NOME
                       ALTERNATE RECORD KEY IS DATANASC
                       WITH DUPLICATES
                       FILE STATUS IS ST-ERRO.
@@ -52,6 +52,10 @@
            03 CHAPA             PIC 9(06).
            03 NOME              PIC X(30).
            03 DATANASC          PIC 9(08).
+           03 DTNASC REDEFINES DATANASC.
+            05 DIA                 PIC 9(02).
+            05 MES                 PIC 9(02).
+            05 ANO                 PIC 9(04).
            03 SEXO              PIC X(01).
            03 GENERO            PIC X(01).
            03 NIVELSALARIAL     PIC 9(02).
@@ -137,69 +141,69 @@
       *-----------------------------------------------------------------
        SCREEN SECTION.
        01  TELAFUNC.
-           05  LINE 01  COLUMN 01 
+           05  LINE 01  COLUMN 01
                VALUE  "--------------------------CADASTRO DE FU".
-           05  LINE 01  COLUMN 41 
+           05  LINE 01  COLUMN 41
                VALUE  "NCIONARIOS------------------------------".
-           05  LINE 03  COLUMN 01 
+           05  LINE 03  COLUMN 01
                VALUE  " CHAPA:           NOME:".
-           05  LINE 03  COLUMN 41 
+           05  LINE 03  COLUMN 41
                VALUE  "               DATA NASC:".
-           05  LINE 04  COLUMN 01 
+           05  LINE 04  COLUMN 01
                VALUE  " SEXO:                    GENERO:".
-           05  LINE 04  COLUMN 41 
+           05  LINE 04  COLUMN 41
                VALUE  "                  COD DEP:".
-           05  LINE 05  COLUMN 01 
+           05  LINE 05  COLUMN 01
                VALUE  "----------------------------------------".
-           05  LINE 05  COLUMN 41 
+           05  LINE 05  COLUMN 41
                VALUE  "----------------------------------------".
-           05  LINE 06  COLUMN 01 
+           05  LINE 06  COLUMN 01
                VALUE  " DENOMINACAO DEP:".
-           05  LINE 06  COLUMN 41 
+           05  LINE 06  COLUMN 41
                VALUE  "             STATUS DEP:".
-           05  LINE 07  COLUMN 01 
+           05  LINE 07  COLUMN 01
                VALUE  " NIVEL HIERARQUICO:".
-           05  LINE 08  COLUMN 01 
+           05  LINE 08  COLUMN 01
                VALUE  "----------------------------------------".
-           05  LINE 08  COLUMN 41 
+           05  LINE 08  COLUMN 41
                VALUE  "----------------------------------------".
-           05  LINE 09  COLUMN 01 
+           05  LINE 09  COLUMN 01
                VALUE  " COD. CARGO:              DENOMINACAO CARGO:".
-           05  LINE 10  COLUMN 01 
+           05  LINE 10  COLUMN 01
                VALUE  " TIPO DE SALARIO:                  SALAR".
-           05  LINE 10  COLUMN 41 
+           05  LINE 10  COLUMN 41
                VALUE  "IO BASE:".
-           05  LINE 11  COLUMN 01 
+           05  LINE 11  COLUMN 01
                VALUE  " STATUS DO CARGO:".
-           05  LINE 12  COLUMN 01 
+           05  LINE 12  COLUMN 01
                VALUE  "----------------------------------------".
-           05  LINE 12  COLUMN 41 
+           05  LINE 12  COLUMN 41
                VALUE  "----------------------------------------".
-           05  LINE 13  COLUMN 01 
+           05  LINE 13  COLUMN 01
                VALUE  " NIVEL SALARIAL:          IMP. RENDA:".
-           05  LINE 13  COLUMN 41 
+           05  LINE 13  COLUMN 41
                VALUE  "         QTD. DEPENDENTES:".
-           05  LINE 14  COLUMN 01 
+           05  LINE 14  COLUMN 01
                VALUE  " STATUS DO FUNCIONARIO:".
-           05  LINE 15  COLUMN 01 
+           05  LINE 15  COLUMN 01
                VALUE  "----------------------------------------".
-           05  LINE 15  COLUMN 41 
+           05  LINE 15  COLUMN 41
                VALUE  "----------------------------------------".
-           05  LINE 16  COLUMN 01 
+           05  LINE 16  COLUMN 01
                VALUE  " CEP DO FUNCIONARIO:                 LOG".
-           05  LINE 16  COLUMN 41 
+           05  LINE 16  COLUMN 41
                VALUE  "RADOURO:".
-           05  LINE 17  COLUMN 01 
+           05  LINE 17  COLUMN 01
                VALUE  " NUM:             COMPLEMENTO:".
-           05  LINE 17  COLUMN 41 
+           05  LINE 17  COLUMN 41
                VALUE  "        BAIRRO:".
-           05  LINE 18  COLUMN 01 
+           05  LINE 18  COLUMN 01
                VALUE  " CIDADE:                      UF:".
-           05  LINE 19  COLUMN 01 
+           05  LINE 19  COLUMN 01
                VALUE  "----------------------------------------".
-           05  LINE 19  COLUMN 41 
+           05  LINE 19  COLUMN 41
                VALUE  "----------------------------------------".
-           05  LINE 21  COLUMN 01 
+           05  LINE 21  COLUMN 01
                VALUE  " MENSAGEM:".
       *-------------------------FUNCIONARIO-----------------------------
            05  TCHAPA
@@ -210,9 +214,9 @@
                LINE 03  COLUMN 25  PIC x(30)
                USING  NOME
                HIGHLIGHT.
-           05  TDATANASC
+           05  TDTNASC
                LINE 03  COLUMN 67  PIC 99/99/9999
-               USING  DATANASC
+               USING  DTNASC
                HIGHLIGHT.
            05  TSEXO
                LINE 04  COLUMN 07  PIC X(02)
@@ -271,7 +275,7 @@
                LINE 07 COLUMN 20 PIC 9(02)
                USING TPHIERARC
                HIGHLIGHT.
-           
+
       *---------------------CARGOS--------------------------------------
            05  TCODIGOCARG
                LINE 09 COLUMN 13  PIC 9(03)
@@ -286,15 +290,11 @@
                USING  TPSALARIO
                HIGHLIGHT.
            05  TSALARIOBASE
-               LINE 10  COLUMN 60  PIC 999999.99
+               LINE 10  COLUMN 50  PIC 999999.99
                USING  SALARIOBASE
                HIGHLIGHT.
-           05  TXTSALARIO
-               LINE 10  COLUMN 21  PIC X(15)
-               USING  TXTTSALARIO
-               HIGHLIGHT.
            05  TCARGOSTATUS
-               LINE 11 COLUMN 18 PIC X(25)
+               LINE 11 COLUMN 18 PIC X(01)
                USING CARGOSTATUS
                HIGHLIGHT.
 
@@ -391,10 +391,10 @@
        R1.
            MOVE SPACES TO NOME SEXO IMPRENDA FUNCSTATUS DEPSTATUS
            MOVE SPACES TO CARGOSTATUS CEP-COMPLE GENERO DENOM
-           MOVE SPACES TO DENOMINACAO TPSALARIO
+           MOVE SPACES TO DENOMINACAO TPSALARIO 
 
            MOVE ZEROS TO CEP-NUMRES NIVELSALARIAL QTDDEPENDENTES
-           MOVE ZEROS TO CHAPA W-SEL DATANASC TPHIERARC 
+           MOVE ZEROS TO CHAPA W-SEL DTNASC TPHIERARC
            MOVE ZEROS TO CEPFUNC CODDEP CODIGOCARG SALARIOBASE
 
       *-------------[VISUALIZACAO DA TELA PRINCIPAL]--------------------
@@ -433,11 +433,11 @@
               GO TO R3.
 
        R4.
-           ACCEPT TDATANASC.
-           IF DATANASC < 1
-              MOVE "CAMPO DATA DE NASCIMENTO VAZIO!" TO MENS
-              PERFORM ROT-MENS THRU ROT-MENS-FIM
-              GO TO R4.
+           ACCEPT TDTNASC.
+           IF W-ACT = 01
+                   GO TO R3.
+
+
 
        R5.
            ACCEPT TSEXO.
@@ -492,7 +492,7 @@
                IF ST-ERRO = "23"
                    MOVE "*** DEP DIGITADO NAO ENCONTRADO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
-                   GO TO R8
+                   GO TO R7
                ELSE
                   MOVE "ERRO NA LEITURA ARQUIVO CADASTRO DEP" TO MENS
                   PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -505,7 +505,7 @@
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01
                    DISPLAY TELAFUNC
-                   GO TO R5.
+                   GO TO R8.
            IF CODIGOCARG = 0
                  MOVE "*** CODIGO CARGO. NAO INFORMADO  ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -525,7 +525,7 @@
                   GO TO ROT-FIM
            ELSE
                 DISPLAY TELAFUNC.
-       
+
        R11.
            ACCEPT TNIVELSALARIAL.
            IF NIVELSALARIAL < 0 OR > 20
@@ -545,8 +545,30 @@
               MOVE "CAMPO IMP. RENDA VAZIO!" TO MENS
               PERFORM ROT-MENS THRU ROT-MENS-FIM
               GO TO R11.
-       
+
        R14.
+           ACCEPT TFUNCSTATUS.
+           ACCEPT W-ACT FROM ESCAPE KEY
+           IF W-ACT = 01
+              GO TO R3.
+
+       R14A.
+           MOVE TBSTATUS(IND) TO TXTSTATUS
+           IF TXTSTATUS1 NOT = FUNCSTATUS
+              ADD 1 TO IND
+              IF IND < 4
+                 GO TO R14A
+              ELSE
+                 MOVE "STATUS INVALIDO" TO MENS
+                 MOVE 1 TO IND
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO R14
+           ELSE
+              DISPLAY TELAFUNC.
+              MOVE 1 TO IND
+              DISPLAY (14 , 24) TXTSTATUS2.
+
+       R15.
            ACCEPT TCEPFUNC.
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01
@@ -556,9 +578,9 @@
                  MOVE "*** CEP FUNCIONARIO NAO INFORMADO  ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO R14.
-       
 
-       R15.
+
+       R16.
            MOVE CEPFUNC TO CEP-NUMCEP.
            READ CADCEP
            IF ST-ERRO NOT = "00"
@@ -573,13 +595,13 @@
            ELSE
                 DISPLAY TELAFUNC.
 
-       R16.
+       R17.
            ACCEPT TCEP-NUMRES.
            IF CEP-NUMRES < 0
               MOVE "NUMERO INVALIDO!" TO MENS
               PERFORM ROT-MENS THRU ROT-MENS-FIM
               GO TO R16.
-       R17.
+       R18.
            ACCEPT TCEP-COMPLE.
            IF W-ACT = 01
                    DISPLAY TELAFUNC
@@ -607,11 +629,12 @@
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO R1.
                IF ST-ERRO = "22"
-                   MOVE "* CEP JA EXISTE,DADOS NAO GRAVADOS *" TO MENS
+                   MOVE "* FUNCIONARIO JA EXISTE,DADOS NAO GRAVADOS *"
+                   TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO R1
                ELSE
-                   MOVE "ERRO NA GRAVACAO DO ARQUIVO CADCEP" TO MENS
+                   MOVE "ERRO NA GRAVACAO DO ARQUIVO ARQFUNC" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO ROT-FIM.
       *
@@ -649,7 +672,7 @@
        EXC-DL1.
                 DELETE ARQFUNC RECORD
                 IF ST-ERRO = "00"
-                   MOVE "*** REGISTRO DE CEP EXCLUIDO ***" TO MENS
+                   MOVE "*** REGISTRO DE FUNC. EXCLUIDO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO R1.
                 MOVE "ERRO NA EXCLUSAO DO REGISTRO "   TO MENS
@@ -657,7 +680,7 @@
                 GO TO ROT-FIM.
       *
        ALT-OPC.
-                DISPLAY "ALTERAR  (S/N) : ".
+                DISPLAY (23, 12) "ALTERAR  (S/N) : ".
                 ACCEPT W-OPCAO
                 IF W-OPCAO = "N" OR "n"
                    MOVE "*** INFORMACOES NAO ALTERADAS *** " TO MENS
@@ -685,14 +708,14 @@
        ROT-MENS.
                 MOVE ZEROS TO W-CONT.
        ROT-MENS1.
-               DISPLAY (21, 15) MENS.
+               DISPLAY (23, 15) MENS.
        ROT-MENS2.
                 ADD 1 TO W-CONT
                 IF W-CONT < 3000
                    GO TO ROT-MENS2
                 ELSE
                    MOVE SPACES TO MENS
-                   DISPLAY (21, 15) MENS.
+                   DISPLAY (23, 15) MENS.
        ROT-MENS-FIM.
                 EXIT.
        FIM-ROT-TEMPO.

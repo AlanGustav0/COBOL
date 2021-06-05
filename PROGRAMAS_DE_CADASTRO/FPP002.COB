@@ -192,11 +192,11 @@
                 DISPLAY TELACARGOS
                 GO TO R4.
            IF TPSALARIO = "H"
-               ADD 1 TO INDSALARIO
+               MOVE 1 TO INDSALARIO
            ELSE IF TPSALARIO = "D"
-               ADD 2 TO INDSALARIO
+               MOVE 2 TO INDSALARIO
            ELSE IF TPSALARIO = "M"
-               ADD 3 TO INDSALARIO
+               MOVE 3 TO INDSALARIO
            ELSE
                 MOVE "*** OPCAO INVALIDA ***" TO MENS
                 PERFORM ROT-MENS THRU ROT-MENS-FIM
