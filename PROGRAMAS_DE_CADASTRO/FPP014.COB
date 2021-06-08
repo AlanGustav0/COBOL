@@ -76,7 +76,6 @@
        01 NOMENTR    PIC X(45) VALUE SPACES.
        01 IND          PIC 9(02) VALUE ZEROS.
        01 INDSALARIO   PIC 9(01) VALUE ZEROS.
-       01 TXTTSALARIO  PIC X(20) VALUE SPACES.
 
        01 TABSALARIO.
            03 TBSALARIO      PIC X(20) OCCURS 3 TIMES.
@@ -96,9 +95,9 @@
           03 FILLER          PIC X(02) VALUE SPACES.
           03 DETCHAPA        PIC 999999.
           03 FILLER          PIC X(02) VALUE SPACES.
-          03 DETNOME         PIC X(30) VALUE SPACES.
+          03 DETNOME         PIC X(29) VALUE SPACES.
           03 FILLER          PIC X(02) VALUE SPACES.
-          03 DETTPSALARIO    PIC X(15) VALUE SPACES.
+          03 DETTPSALARIO    PIC X(17) VALUE SPACES.
           03 FILLER          PIC X(02) VALUE SPACES.
           03 DETSALARIOBASE  PIC 9(06)V99.
           03 FILLER          PIC X(02) VALUE SPACES.
@@ -113,7 +112,7 @@
            05  LINE 02  COLUMN 41
                VALUE  "FUNCIONARIOS|---------------------------".
            05  LINE 04  COLUMN 01
-               VALUE  "  CHAPA |            NOME               ".
+               VALUE  "  CHAPA |            NOME             ".
            05  LINE 04  COLUMN 41
                VALUE  "  ".
            05  LINE 04  COLUMN 41
@@ -227,6 +226,21 @@
            ELSE
               NEXT SENTENCE.
 
+       
+       LER-ARQCARG.
+           READ ARQCARG NEXT
+           IF ST-ERRO NOT = "00"
+              IF ST-ERRO = "10"
+                 PERFORM ROT-MONTAR
+                 MOVE "*** FIM DO ARQUIVO  ***" TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO NOV-SOL
+              ELSE
+                 MOVE "ERRO NA LEITURA DO ARQUIVO ARQCARG"  TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO ROT-FIM
+           ELSE
+              NEXT SENTENCE.
 
        ROT-SAL.
 
@@ -250,27 +264,11 @@
                    IF FUNCSTATUS = "D"
                       MOVE "DESATIVADA" TO TXTSTATUS.
 
-       
-       LER-ARQCARG.
-           READ ARQCARG NEXT
-           IF ST-ERRO NOT = "00"
-              IF ST-ERRO = "10"
-                 MOVE "*** FIM DO ARQUIVO  ***" TO MENS
-                 PERFORM ROT-MENS THRU ROT-MENS-FIM
-                 GO TO NOV-SOL
-              ELSE
-                 MOVE "ERRO NA LEITURA DO ARQUIVO ARQCARG"  TO MENS
-                 PERFORM ROT-MENS THRU ROT-MENS-FIM
-                 GO TO ROT-FIM
-           ELSE
-              NEXT SENTENCE.
-
 
        ROT-MONTAR.
            MOVE CHAPA  TO DETCHAPA
            MOVE NOME TO DETNOME
-           MOVE TBSALARIO(INDSALARIO) TO TXTTSALARIO
-           MOVE TXTTSALARIO TO DETTPSALARIO
+           MOVE TBSALARIO(INDSALARIO) TO DETTPSALARIO
            MOVE SALARIOBASE TO DETSALARIOBASE
            MOVE TXTSTATUS2  TO DETSTATUS
 

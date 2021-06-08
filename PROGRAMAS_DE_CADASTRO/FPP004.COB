@@ -15,15 +15,6 @@
                       ACCESS MODE IS DYNAMIC
                       RECORD KEY IS CHAPA
                       ALTERNATE RECORD KEY IS NOME
-                      ALTERNATE RECORD KEY IS DATANASC
-                      WITH DUPLICATES
-                      FILE STATUS IS ST-ERRO.
-
-           SELECT ARQCARG ASSIGN TO DISK
-                      ORGANIZATION IS INDEXED
-                      ACCESS MODE IS DYNAMIC
-                      RECORD KEY IS COD
-                      ALTERNATE RECORD KEY IS DENOM
                       WITH DUPLICATES
                       FILE STATUS IS ST-ERRO.
 
@@ -32,6 +23,14 @@
                       ACCESS MODE IS DYNAMIC
                       RECORD KEY IS CODIGO
                       ALTERNATE RECORD KEY IS DENOMINACAO
+                      WITH DUPLICATES
+                      FILE STATUS IS ST-ERRO.
+
+           SELECT ARQCARG ASSIGN TO DISK
+                      ORGANIZATION IS INDEXED
+                      ACCESS MODE IS DYNAMIC
+                      RECORD KEY IS COD
+                      ALTERNATE RECORD KEY IS DENOM
                       WITH DUPLICATES
                       FILE STATUS IS ST-ERRO.
 
@@ -68,16 +67,6 @@
            03 CEP-COMPLE        PIC X(12).
            03 CEP-NUMRES        PIC 9(04).
       *-----------------------------------------------------------------
-       FD ARQCARG
-              LABEL RECORD IS STANDARD
-              VALUE OF FILE-ID IS "ARQCARG.DAT".
-       01 REGCARG.
-          03 COD                PIC 9(03).
-          03 DENOM              PIC X(25).
-          03 TPSALARIO          PIC X(25).
-          03 SALARIOBASE        PIC 9(06)V99.
-          03 CARGOSTATUS        PIC X(01).
-      *-----------------------------------------------------------------
        FD ARQDEP
                LABEL RECORD IS STANDARD
                VALUE OF FILE-ID IS "ARQDEP.DAT".
@@ -86,6 +75,18 @@
           03 DENOMINACAO              PIC X(25).
           03 DEPSTATUS                PIC X(01).
           03 TPHIERARC                PIC 9(02).
+       
+      *-----------------------------------------------------------------
+       FD ARQCARG
+              LABEL RECORD IS STANDARD
+              VALUE OF FILE-ID IS "ARQCARG.DAT".
+       01 REGCARG.
+          03 COD                PIC 9(03).
+          03 DENOM              PIC X(45).
+          03 TPSALARIO          PIC X(01).
+          03 SALARIOBASE        PIC 9(06)V99.
+          03 CARGSTATUS         PIC X(01).
+       
       *-----------------------------------------------------------------
        FD CADCEP
                LABEL RECORD IS STANDARD
@@ -106,7 +107,6 @@
        01 ST-ERRO         PIC X(02) VALUE "00".
        01 W-SEL           PIC 9(01) VALUE ZEROS.
        01 IND             PIC 9(02) VALUE ZEROS.
-       01 TXTTSALARIO     PIC X(20) VALUE SPACES.
        01 TEXSEXO         PIC X(12) VALUE SPACES.
 
        01 TABGENEROX.
@@ -258,6 +258,8 @@
                LINE 17  COLUMN 12 PIC 9(04)
                USING  CEP-NUMRES
                HIGHLIGHT.
+
+         
       *-----------------------DEPARTAMENTO------------------------------
            05  TCODDEP
                LINE 04  COLUMN 67  PIC 9(03)
@@ -293,10 +295,11 @@
                LINE 10  COLUMN 50  PIC 999999.99
                USING  SALARIOBASE
                HIGHLIGHT.
-           05  TCARGOSTATUS
+           05  TSTATUSS
                LINE 11 COLUMN 18 PIC X(01)
-               USING CARGOSTATUS
+               USING CARGSTATUS
                HIGHLIGHT.
+           
 
       *--------------------------CEP------------------------------------
            05  TCEPFUNC
@@ -345,35 +348,7 @@
            ELSE
                  NEXT SENTENCE.
 
-       R0A.
-           OPEN INPUT ARQCARG
-           IF ST-ERRO NOT = "00"
-              IF ST-ERRO = "30"
-                 MOVE "*** ARQUIVO ARQCARG NAO ENCONTRADO **" TO MENS
-                 PERFORM ROT-MENS THRU ROT-MENS-FIM
-                 GO TO ROT-FIM
-              ELSE
-                 MOVE "ERRO NA ABERTURA DO ARQUIVO ARQCARG" TO MENS
-                 PERFORM ROT-MENS THRU ROT-MENS-FIM
-                 GO TO ROT-FIM
-           ELSE
-                 NEXT SENTENCE.
-
        R0B.
-           OPEN INPUT CADCEP
-           IF ST-ERRO NOT = "00"
-              IF ST-ERRO = "30"
-                 MOVE "*** ARQUIVO CADCEP NAO ENCONTRADO **" TO MENS
-                 PERFORM ROT-MENS THRU ROT-MENS-FIM
-                 GO TO ROT-FIM
-              ELSE
-                 MOVE "ERRO NA ABERTURA DO ARQUIVO CADCEP" TO MENS
-                 PERFORM ROT-MENS THRU ROT-MENS-FIM
-                 GO TO ROT-FIM
-           ELSE
-                 NEXT SENTENCE.
-
-       R0C.
            OPEN INPUT ARQDEP
            IF ST-ERRO NOT = "00"
               IF ST-ERRO = "30"
@@ -387,10 +362,40 @@
            ELSE
                  NEXT SENTENCE.
 
+       R0C.
+           OPEN INPUT ARQCARG
+           IF ST-ERRO NOT = "00"
+              IF ST-ERRO = "30"
+                 MOVE "*** ARQUIVO ARQCARG NAO ENCONTRADO **" TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO ROT-FIM
+              ELSE
+                 MOVE "ERRO NA ABERTURA DO ARQUIVO ARQCARG" TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO ROT-FIM
+           ELSE
+                 NEXT SENTENCE.
+
+       R0D.
+           OPEN INPUT CADCEP
+           IF ST-ERRO NOT = "00"
+              IF ST-ERRO = "30"
+                 MOVE "*** ARQUIVO CADCEP NAO ENCONTRADO **" TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO ROT-FIM
+              ELSE
+                 MOVE "ERRO NA ABERTURA DO ARQUIVO CADCEP" TO MENS
+                 PERFORM ROT-MENS THRU ROT-MENS-FIM
+                 GO TO ROT-FIM
+           ELSE
+                 NEXT SENTENCE.
+
+       
+
       *------------[ INICIALIZACAO DAS VARIAVEIS ]----------------------
        R1.
            MOVE SPACES TO NOME SEXO IMPRENDA FUNCSTATUS DEPSTATUS
-           MOVE SPACES TO CARGOSTATUS CEP-COMPLE GENERO DENOM
+           MOVE SPACES TO CARGSTATUS CEP-COMPLE GENERO DENOM
            MOVE SPACES TO DENOMINACAO TPSALARIO 
 
            MOVE ZEROS TO CEP-NUMRES NIVELSALARIAL QTDDEPENDENTES
@@ -411,7 +416,9 @@
            READ ARQFUNC
            IF ST-ERRO NOT = "23"
               IF ST-ERRO = "00"
-                PERFORM R5A
+                PERFORM R8
+                PERFORM R10
+                PERFORM R16
                 DISPLAY TELAFUNC
                 MOVE "*** FUNCIONARIO JA CADASTRAD0 ***" TO MENS
                 PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -497,8 +504,8 @@
                   MOVE "ERRO NA LEITURA ARQUIVO CADASTRO DEP" TO MENS
                   PERFORM ROT-MENS THRU ROT-MENS-FIM
                   GO TO ROT-FIM
-           ELSE
-                DISPLAY TELAFUNC.
+           DISPLAY TELAFUNC.
+
 
        R9.
            ACCEPT TCODIGOCARG.
@@ -623,20 +630,20 @@
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO INC-OPC.
        INC-WR1.
-           WRITE REGFUNC
-               IF ST-ERRO = "00" OR "02"
-                   MOVE "*** DADOS GRAVADOS *** " TO MENS
-                   PERFORM ROT-MENS THRU ROT-MENS-FIM
-                   GO TO R1.
-               IF ST-ERRO = "22"
-                   MOVE "* FUNCIONARIO JA EXISTE,DADOS NAO GRAVADOS *"
-                   TO MENS
-                   PERFORM ROT-MENS THRU ROT-MENS-FIM
-                   GO TO R1
-               ELSE
-                   MOVE "ERRO NA GRAVACAO DO ARQUIVO ARQFUNC" TO MENS
-                   PERFORM ROT-MENS THRU ROT-MENS-FIM
-                   GO TO ROT-FIM.
+                WRITE REGFUNC
+                IF ST-ERRO = "00" OR "02"
+                      MOVE "*** DADOS GRAVADOS *** " TO MENS
+                      PERFORM ROT-MENS THRU ROT-MENS-FIM
+                      GO TO R1.
+                IF ST-ERRO = "22"
+                     MOVE "*FUNCIONARIO JA EXISTE,DADOS NAO GRAVADOS*"
+                     TO MENS
+                     PERFORM ROT-MENS THRU ROT-MENS-FIM
+                     GO TO R1
+                ELSE
+                     MOVE "ERRO NA GRAVACAO DO ARQUIVO ARQFUNC" TO MENS
+                     PERFORM ROT-MENS THRU ROT-MENS-FIM
+                     GO TO ROT-FIM.
       *
       *****************************************
       * ROTINA DE CONSULTA/ALTERACAO/EXCLUSAO *
