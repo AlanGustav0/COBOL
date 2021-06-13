@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. FPT001.
+       PROGRAM-ID. FPP001                                               .
       *AUTHOR."ALAN GUSTAVO".
       ********************************************************
       * MANUTENCAO DO CADASTRO DE DEPARTAMENTO   *
@@ -8,7 +8,7 @@
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        SPECIAL-NAMES.
-             DECIMAL-POINT IS COMMA.
+                    DECIMAL-POINT IS COMMA.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
            SELECT ARQDEP ASSIGN TO DISK
@@ -42,23 +42,23 @@
        01 ST-ERRO         PIC X(02) VALUE "00".
        01 W-SEL           PIC 9(01) VALUE ZEROS.
        01 IND             PIC 9(02) VALUE ZEROS.
-       01 TXTTHIERARC     PIC X(45) VALUE SPACES.
+       01 TXTTHIERARC     PIC X(30) VALUE SPACES.
 
 
        01 TABHIERARC.
            03 TBHIERARC      PIC X(45) OCCURS 9 TIMES.
 
        01 TABSTATUS.
-           03 FILLER PIC X(20) VALUE "AATIVA".
-           03 FILLER PIC X(20) VALUE "SSUSPENSA".
-           03 FILLER PIC X(20) VALUE "DDESATIVADA".
+           03 FILLER PIC X(15) VALUE "AATIVA".
+           03 FILLER PIC X(15) VALUE "SSUSPENSA".
+           03 FILLER PIC X(15) VALUE "DDESATIVADA".
 
        01 TABSTATUSX      REDEFINES TABSTATUS.
-           03 TBSTATUS    PIC X(20) OCCURS 3 TIMES.
+           03 TBSTATUS    PIC X(15) OCCURS 3 TIMES.
 
        01 TXTSTATUS.
            03 TXTSTATUS1 PIC X(01) VALUE SPACES.
-           03 TXTSTATUS2 PIC X(19) VALUE SPACES.
+           03 TXTSTATUS2 PIC X(14) VALUE SPACES.
 
        SCREEN SECTION.
 
@@ -178,7 +178,7 @@
               GO TO R2A.
 
        R3.
-
+      
            ACCEPT TTPHIERARC.
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01

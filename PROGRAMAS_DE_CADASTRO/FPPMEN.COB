@@ -22,15 +22,15 @@
 
       *-----------------------------------------------------------------
        01 TAB-PROGR-R.
-           03 FILLER PIC X(07) VALUE "FPT001".
+           03 FILLER PIC X(07) VALUE "FPP001".
            03 FILLER PIC X(07) VALUE "FPP002".
            03 FILLER PIC X(07) VALUE "FPP009".
            03 FILLER PIC X(07) VALUE "FPP004".
            03 FILLER PIC X(07) VALUE "FPP003".
            03 FILLER PIC X(07) VALUE "FPP011".
            03 FILLER PIC X(07) VALUE "FPP012".
-           03 FILLER PIC X(07) VALUE "       ".
-           03 FILLER PIC X(07) VALUE "       ".
+           03 FILLER PIC X(07) VALUE "FPP014".
+           03 FILLER PIC X(07) VALUE "FPP013".
            03 FILLER PIC X(07) VALUE "       ".
       *
        01 TAB-PROGR   REDEFINES TAB-PROGR-R.
@@ -88,6 +88,10 @@
                VALUE  "                             OPCAO :".
            05  LINE 14  COLUMN 41 
                VALUE  " ( 00 - ENCERRA )".
+           05  LINE 21  COLUMN 03 
+               VALUE  "              DIGITE A OPCAO :    (00 -".
+           05  LINE 21  COLUMN 41 
+               VALUE  "ENCERRA O PROCESSAMENTO)".
            05  LINE 23  COLUMN 01 
                VALUE  " MENSAGEM :".
            05  T-OPCAO

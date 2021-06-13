@@ -13,8 +13,8 @@
            SELECT ARQDEPE ASSIGN TO DISK
                       ORGANIZATION IS INDEXED
                       ACCESS MODE IS DYNAMIC
-                      RECORD KEY IS DEPEN-SEQ
-                      ALTERNATE RECORD KEY IS DEPEN-NOME 
+                      RECORD KEY IS DEPEN-KEY
+                      ALTERNATE RECORD KEY IS DEPEN-NOME
                       WITH DUPLICATES
                       FILE STATUS IS ST-ERRO.
 
@@ -34,19 +34,21 @@
                  VALUE OF FILE-ID IS "ARQDEPE.DAT".
 
        01 REGDEPE.
-           03 DEPEN-SEQ          PIC 9(01).
-           03 DEPEN-NOME         PIC X(30).
-           03 DEPEN-CHAPA        PIC 9(06).
            03 TPGRAU             PIC 9(01).
+           03 DEPEN-KEY.
+            05 DEPEN-SEQ          PIC 9(01).
+            05 DEPEN-CHAPA        PIC 9(06).
+           03 DEPEN-NOME         PIC X(30).
            03 DEPEN-DATANASC           PIC 9(08).
            03 DTNASCIMENTO REDEFINES DEPEN-DATANASC.
             05 DEPEN-DIA                 PIC 9(02).
             05 DEPEN-MES                 PIC 9(02).
             05 DEPEN-ANO                 PIC 9(04).
-           03 DEPEN-SEXO              PIC X(01).
+           03 DEPEN-SEXO        PIC X(01).
            03 DEPEN-INSS        PIC X(01).
            03 DEPEN-IMPRENDA    PIC X(01).
-           03 DEPEN-STATUS      PIC X(01).
+           03 DEPEN-STATUS      PIC X(20).
+           
 
        FD ARQFUNC
                  LABEL RECORD IS STANDARD
@@ -56,9 +58,9 @@
            03 NOME              PIC X(30).
            03 DATANASC          PIC 9(08).
            03 DTNASC REDEFINES DATANASC.
-            05 DIA                 PIC 9(02). 
-            05 MES                 PIC 9(02). 
-            05 ANO                 PIC 9(04). 
+            05 DIA                 PIC 9(02).
+            05 MES                 PIC 9(02).
+            05 ANO                 PIC 9(04).
            03 SEXO              PIC X(01).
            03 GENERO            PIC X(01).
            03 NIVELSALARIAL     PIC 9(02).
@@ -80,7 +82,7 @@
        77 LIMPA           PIC X(50) VALUE SPACES.
        01 ST-ERRO         PIC X(02) VALUE "00".
        01 W-SEL           PIC 9(01) VALUE ZEROS.
-       01 IND             PIC 9(02) VALUE ZEROS.
+       01 IND             PIC 9(01) VALUE ZEROS.
        01 TXTTGRAU        PIC X(20) VALUE SPACES.
        01 TEXSEXO         PIC X(15) VALUE SPACES.
        01 TDEPENINSS      PIC X(10) VALUE SPACES.
@@ -105,47 +107,47 @@
       *-----------------------------------------------------------------
        SCREEN SECTION.
        01  TELADEPEN.
-           05  LINE 02  COLUMN 01 
+           05  LINE 02  COLUMN 01
                VALUE  "----------------------------CADASTRO DE".
-           05  LINE 02  COLUMN 41 
+           05  LINE 02  COLUMN 41
                VALUE  "DEPENDENTES-----------------------------".
-           05  LINE 04  COLUMN 01 
-               VALUE  "  CHAPA DO FUNCIONARIO:                N".       
-           05  LINE 04  COLUMN 41 
+           05  LINE 04  COLUMN 01
+               VALUE  "  CHAPA DO FUNCIONARIO:                N".
+           05  LINE 04  COLUMN 41
                VALUE  "OME:".
-           05  LINE 05  COLUMN 01 
+           05  LINE 05  COLUMN 01
                VALUE  "  DATA NASC:                 SEXO:".
-           05  LINE 05  COLUMN 41 
+           05  LINE 05  COLUMN 41
                VALUE  "            GENERO:".
-           05  LINE 06  COLUMN 01 
+           05  LINE 06  COLUMN 01
                VALUE  "  NIVEL SALARIAL:            IMP. RENDA:".
-           05  LINE 06  COLUMN 41 
+           05  LINE 06  COLUMN 41
                VALUE  "            QTD. DEPEN.:".
-           05  LINE 07  COLUMN 01 
+           05  LINE 07  COLUMN 01
                VALUE  "  STATUS DO FUNCIONARIO:".
-           05  LINE 08  COLUMN 01 
+           05  LINE 08  COLUMN 01
                VALUE  "  ______________________________________".
-           05  LINE 08  COLUMN 41 
+           05  LINE 08  COLUMN 41
                VALUE  "_____________________________________".
-           05  LINE 09  COLUMN 01 
+           05  LINE 09  COLUMN 01
                VALUE  "  SEQ. DEPENDENTE:                    GR".
-           05  LINE 09  COLUMN 41 
+           05  LINE 09  COLUMN 41
                VALUE  "AU PARENTESCO:".
-           05  LINE 10  COLUMN 01 
+           05  LINE 10  COLUMN 01
                VALUE  "  NOME DO DEPENDENTE:".
-           05  LINE 10  COLUMN 41 
+           05  LINE 10  COLUMN 41
                VALUE  "                 DATA NASC:".
-           05  LINE 11  COLUMN 01 
+           05  LINE 11  COLUMN 01
                VALUE  "  SEXO:               DEPEND. INSS:".
-           05  LINE 11  COLUMN 41 
+           05  LINE 11  COLUMN 41
                VALUE  "         DEPEND. IMP. RENDA:".
-           05  LINE 14  COLUMN 01 
+           05  LINE 14  COLUMN 01
                VALUE  "  STATUS DO DEPENDENTE:".
-           05  LINE 15  COLUMN 01 
+           05  LINE 15  COLUMN 01
                VALUE  "  ______________________________________".
-           05  LINE 15  COLUMN 41 
+           05  LINE 15  COLUMN 41
                VALUE  "_____________________________________".
-           05  LINE 20  COLUMN 01 
+           05  LINE 20  COLUMN 01
                VALUE  "  MENSAGEM:".
 
       *-------------------------[FUNCIONARIO]---------------------------
@@ -196,7 +198,7 @@
                LINE 10  COLUMN 23  PIC X(30)
                USING  DEPEN-NOME
                HIGHLIGHT.
-           05  TDEPEN-SEQ
+           05  TDPEN-SEQ
                LINE 09  COLUMN 19  PIC 9(01)
                USING  DEPEN-SEQ
                HIGHLIGHT.
@@ -288,7 +290,7 @@
        R1.
            MOVE SPACES TO NOME SEXO GENERO IMPRENDA FUNCSTATUS
            MOVE SPACES TO DEPEN-SEXO DEPEN-INSS  DEPEN-IMPRENDA
-           MOVE SPACES TO DEPEN-STATUS TXTTGRAU
+           MOVE SPACES TO DEPEN-STATUS TXTTGRAU 
 
            MOVE ZEROS TO DEPEN-SEQ TPGRAU DTNASCIMENTO DEPEN-CHAPA
            MOVE ZEROS TO DTNASC NIVELSALARIAL QTDDEPENDENTES
@@ -323,6 +325,8 @@
                   GO TO ROT-FIM
            ELSE
                 DISPLAY TELADEPEN.
+       ROT-NOME.
+
        R4.
 
        LER-ARQDEPE.
@@ -343,7 +347,7 @@
                 PERFORM ROT-MENS THRU ROT-MENS-FIM.
 
        R5.
-           ACCEPT TDEPEN-SEQ.
+           ACCEPT TDPEN-SEQ.
            IF DEPEN-SEQ < 0
               MOVE "SEQ. DEPENDENTE INVALIDO!" TO MENS
               PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -371,8 +375,8 @@
               MOVE "CAMPO NOME VAZIO!" TO MENS
               PERFORM ROT-MENS THRU ROT-MENS-FIM
               GO TO R7.
-      
-       R8. 
+
+       R8.
            ACCEPT TDTNASCIMENTO.
            IF DTNASCIMENTO = SPACES
               MOVE "CAMPO DATA NASCIMENTO VAZIO!" TO MENS
@@ -395,10 +399,10 @@
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO R9.
            DISPLAY TTDEPEN-SEXO.
-            
+
 
        R10.
-           ACCEPT TDEPEN-INSS  
+           ACCEPT TDEPEN-INSS
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 01
                    GO TO R9.
@@ -417,7 +421,7 @@
                      GO TO R10.
            DISPLAY TDEPENINSS.
 
-       R11. 
+       R11.
            ACCEPT TDEPEN-IMPRENDA.
            IF DEPEN-IMPRENDA = SPACES
               MOVE "CAMPO IMP. RENDA VAZIO!" TO MENS
@@ -444,8 +448,8 @@
                  GO TO R12
            ELSE
               DISPLAY TELADEPEN.
-              MOVE 1 TO IND
-              DISPLAY (14 , 25) TXTSTATUS2.    
+              ADD 1 TO IND
+              DISPLAY (14 , 25) TXTSTATUS2.
 
 
       * ------------- VERICAR SE E ALTERACAO ---------------------------
@@ -532,7 +536,7 @@
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO ALT-OPC.
        ALT-RW1.
-                REWRITE REGDEPE    
+                REWRITE REGDEPE
                 IF ST-ERRO = "00" OR "02"
                    MOVE "*** REGISTRO ALTERADO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
